@@ -1,2 +1,4 @@
-# utility-scripts
-Various utility scripts for working with JFrog Platform
+Utility Scripts for JFrog
+=========================
+
+Various utility scripts for working with JFrog Platform.
