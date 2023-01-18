@@ -84,13 +84,21 @@ def main():
     and create the remote repositories in JFrog Artifactory.  The following is
     an example of the JSON file contents:
     [
-      {"name": "reponame-maven-remote", "remoteUrl": "https://repo.example.com/snapshots/"},
-      {"name": "reponame2-maven-remote", "remoteUrl": "https://repo.example.com/releases/"},
+      {
+        "name": "reponame-maven-remote",
+        "type":"maven",
+        "remoteUrl": "https://repo.example.com/snapshots/"
+      },
+      {
+        "name": "reponame2-maven-remote",
+        "type":"maven",
+        "remoteUrl": "https://repo.example.com/releases/"
+      },
       ...
     ]
     """
 
-    parser = argparse.ArgumentParser(description = parser_description)
+    parser = argparse.ArgumentParser(description = parser_description, formatter_class = argparse.RawTextHelpFormatter)
     parser.add_argument("-v", "--verbose", action = "store_true")
     parser.add_argument("--user", default = os.getenv("ARTIFACTORY_USER", ""),
                         help = "Artifactory user to use for requests.  Will use ARTIFACTORY_USER if not specified.")
