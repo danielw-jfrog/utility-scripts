@@ -9,6 +9,9 @@ import urllib.request
 import urllib.error
 
 ### GLOBALS ###
+REPO_TYPES = ["alpine","cargo","composer","bower","chef","cocoapods","conan","cran","debian","docker","helm","gems",
+              "gitlfs","go","gradle","ivy","maven","npm","nuget","opkg","pub","puppet","pypi","rpm","sbt","swift",
+              "terraform","vagrant","yum","generic"]
 
 ### FUNCTIONS ###
 def read_json_file(filename):
@@ -16,14 +19,19 @@ def read_json_file(filename):
     Read in and minimal sanitizing of the JSON input file.
 
     :param str filename: Name of JSON input file to read.
-    :return list: List of repository definitions containing "name" and "remote" URL values of the remote repositories to create.
+    :return list: List of repository definitions containing "name", "type", and "remote" URL values of the remote repositories to create.
     """
     repo_list = []
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for item in data:
+            tmp_type = "generic"
+            if "type" in item.keys():
+                if item["type"] in REPO_TYPES:
+                    tmp_type = item["type"]
             repo_list.append({
                 "name": item["name"],
+                "type": tmp_type,
                 "remote": item["remoteUrl"]
             })
     return repo_list
@@ -33,12 +41,13 @@ def create_remote_repo(login_data, repo_definition):
     Send the request to create the remote repo to the JFrog Artifactory API.
 
     :param dict login_data: Dictionary containing "user", "apikey", and "host" values.
-    :param dict repo_definition: Dictionary containing "name" and "remote" URL of the remote repository to create.
+    :param dict repo_definition: Dictionary containing "name", "type", and "remote" URL of the remote repository to create.
     :return:
     """
     req_url = "{}/artifactory/api/repositories/{}".format(login_data["host"], repo_definition["name"])
     req_headers = {"Content-Type": "application/json"}
-    req_data = "{{\"rclass\":\"remote\",\"key\":\"{}\",\"url\":\"{}\"}}".format(repo_definition["name"], repo_definition["remote"]).encode("utf-8")
+    req_data = "{{\"rclass\":\"remote\",\"key\":\"{}\",\"packageType\":\"{}\",\"url\":\"{}\"}}".format(
+        repo_definition["name"], repo_definition["type"], repo_definition["remote"]).encode("utf-8")
 
     logging.debug("req_url: %s", req_url)
     logging.debug("req_headers: %s", req_headers)
