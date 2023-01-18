@@ -1,0 +1,5 @@
+[
+  {"name": "google-maven-remote", "remoteUrl": "https://maven.google.com/"},
+  {"name": "jbossproxy-maven-remote", "remoteUrl": "http://repository.jboss.org/maven2/"},
+  {"name": "redhat-maven-remote", "remoteUrl": "https://maven.repository.redhat.com/ga/"}
+]
