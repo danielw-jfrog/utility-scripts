@@ -12,7 +12,12 @@ import urllib.error
 
 ### FUNCTIONS ###
 def read_json_file(filename):
-    """Read in and minimal sanitizing of the JSON input file."""
+    """
+    Read in and minimal sanitizing of the JSON input file.
+
+    :param str filename: Name of JSON input file to read.
+    :return list: List of repository definitions containing "name" and "remote" URL values of the remote repositories to create.
+    """
     repo_list = []
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
