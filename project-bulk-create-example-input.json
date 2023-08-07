@@ -1,0 +1,6 @@
+[
+  {"name": "project-one", "key": "pone", "description": "Project One Example", "admin_privileges": {"manage_members": true, "manage_resources": true, "manage_security_assets": true, "index_resources": true, "allow_ignore_rules": true}, "storage_quota_bytes": 0},
+  {"name": "project-two", "key": "ptwo", "description": "Project Two Testing", "admin_privileges": {"manage_members": true, "manage_resources": true, "manage_security_assets": true, "index_resources": true, "allow_ignore_rules": true}, "storage_quota_bytes": 0},
+  {"name": "project-three", "key": "pthree", "description": "Project Three Development", "admin_privileges": {"manage_members": true, "manage_resources": true, "manage_security_assets": true, "index_resources": true, "allow_ignore_rules": true}, "storage_quota_bytes": 0}
+]
+
