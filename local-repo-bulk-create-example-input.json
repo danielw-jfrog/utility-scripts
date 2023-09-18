@@ -1,0 +1,5 @@
+[
+  {"name": "example-docker-local", "type": "docker", "project-key": "PO"},
+  {"name": "example-generic-local", "type": "generic"},
+  {"name": "example-maven-local", "type": "maven"}
+]
