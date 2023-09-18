@@ -16,11 +16,6 @@ TOTAL_SIZE = int(10000000000000) # 10 terabytes
 FILE_MIN_SIZE = int(100000) # 100 kilobytes
 FILE_MAX_SIZE = int(10000000000) # 10 gigabytes
 
-TOTAL_COUNT = int(20000)
-TOTAL_SIZE = int(20000000000)
-FILE_MIN_SIZE = int(100000)
-FILE_MAX_SIZE = int(10000000)
-
 NUM_THREADS = 3
 
 POST_URL = "https://artifactory.example.com/artifactory/demo-federated-repo/"
