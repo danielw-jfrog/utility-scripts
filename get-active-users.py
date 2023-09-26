@@ -6,22 +6,10 @@ import datetime
 import json
 import logging
 import os
-import sys
 import urllib.request
 import urllib.error
 
 ### GLOBALS ###
-REPO_TYPES = ["alpine","cargo","composer","bower","chef","cocoapods","conan","cran","debian","docker","helm","gems",
-              "gitlfs","go","gradle","ivy","maven","npm","nuget","opkg","pub","puppet","pypi","rpm","sbt","swift",
-              "terraform","vagrant","yum","generic"]
-
-LOCAL_REPO_KEYS = ["key", "projectKey", "environments", "rclass", "packageType", "description", "notes",
-                   "includesPattern", "excludesPattern", "repoLayoutRef", "debianTrivialLayout", "checksumPolicyType",
-                   "handleReleases", "handleSnapshots", "maxUniqueSnapshots", "maxUniqueTags",
-                   "snapshotVersionBehavior", "suppressPomConsistencyChecks", "blackedOut", "xrayIndex", "propertySets",
-                   "archiveBrowsingEnabled", "calculateYumMetadata", "yumRootDepth", "dockerApiVersion",
-                   "enableFileListsIndexing", "optionalIndexCompressionFormats", "downloadRedirect", "cdnRedirect",
-                   "blockPushingSchema1", "primaryKeyPairRef", "secondaryKeyPairRef", "priorityResolution"]
 
 ### FUNCTIONS ###
 def make_api_request(login_data, method, path, data = None, is_data_json = True):
