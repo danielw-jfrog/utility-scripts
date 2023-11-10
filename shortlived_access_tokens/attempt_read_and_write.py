@@ -136,10 +136,11 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
     """
     req_url = "{}{}".format(login_data["host"], path)
     req_headers = {}
-    if is_data_json:
-        req_headers["Content-Type"] = "application/json"
-    else:
-        req_headers["Content-Type"] = "text/plain"
+    if data is not None:
+        if is_data_json:
+            req_headers["Content-Type"] = "application/json"
+        else:
+            req_headers["Content-Type"] = "text/plain"
     req_data = data.encode("utf-8") if data is not None else None
 
     logging.debug("req_url: %s", req_url)
