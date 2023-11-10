@@ -255,7 +255,7 @@ class FilePoster(threading.Thread):
             #    tmp_post_url = POST_URL[:-1]
             tmp_url = "{}/artifactory/{}/{}".format(self.login_data["host"], "danielw-test-generic-local", tmp_file_meta['path'])
 
-            tmp_headers = {"Authorization", "Bearer: {}".format(self.login_data["token"])}
+            tmp_headers = {"Authorization", "Bearer {}".format(self.login_data["token"])}
 
             #r = requests.put(tmp_url, auth = self.auth, data = tmp_gen, verify = False)
             r = requests.put(tmp_url, headers = tmp_headers, data = tmp_gen, verify = False)
