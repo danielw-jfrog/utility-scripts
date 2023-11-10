@@ -105,10 +105,10 @@ def main():
 
     # Create and log the access token
     access_token_create_request = {
-      "username": "danielw_test_read",
+      "username": "danielw-test-read",
       "scope": "applied-permissions/user", # Using the "user" scope for this demo, but the "groups" scope could be used.
       "expires_in": 600,
-      "description": "Temporary read token for danielw_test_repo"
+      "description": "Temporary read token for danielw-test-read"
     }
     logging.info("Creating Access Token for username: %s", access_token_create_request["username"])
 
