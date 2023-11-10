@@ -109,7 +109,8 @@ def main():
       "scope": "applied-permissions/user", # Using the "user" scope for this demo, but the "groups" scope could be used.
       "expires_in": 600,
       "description": "Temporary read token for danielw-test-read",
-      "include_reference_token": True
+      "include_reference_token": True,
+      "force_revokable": True
     }
     logging.info("Creating Access Token for username: %s", access_token_create_request["username"])
 
