@@ -10,9 +10,9 @@ import urllib.request
 import urllib.error
 
 ### GLOBALS ###
-REPO_TYPES = ["alpine","cargo","composer","bower","chef","cocoapods","conan","cran","debian","docker","helm","gems",
-              "gitlfs","go","gradle","ivy","maven","npm","nuget","opkg","pub","puppet","pypi","rpm","sbt","swift",
-              "terraform","vagrant","yum","generic"]
+REPO_TYPES = ["alpine", "cargo", "composer", "bower", "chef", "cocoapods", "conan", "cran", "debian", "docker", "helm",
+              "gems", "gitlfs", "go", "gradle", "ivy", "maven", "npm", "nuget", "opkg", "pub", "puppet", "pypi", "rpm",
+              "sbt", "swift", "terraform", "vagrant", "yum", "generic"]
 
 LOCAL_REPO_KEYS = ["key", "projectKey", "environments", "rclass", "packageType", "description", "notes",
                    "includesPattern", "excludesPattern", "repoLayoutRef", "debianTrivialLayout", "checksumPolicyType",
@@ -29,8 +29,9 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
 
     :param dict login_data: Dictionary containing "user", "apikey", and "host" values.
     :param str method: One of "GET", "PUT", or "POST".
-    :param str url: URL of the API sans the "host" part.
+    :param str path: URL path of the API sans the "host" part.
     :param str data: String containing the data serialized into JSON format.
+    :param bool is_data_json: Sets whether the request data will be sent as JSON.
     :return:
     """
     req_url = "{}{}".format(login_data["host"], path)
@@ -46,7 +47,12 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
     logging.debug("req_data: %s", req_data)
 
     req_pwmanager = urllib.request.HTTPPasswordMgrWithPriorAuth()
-    req_pwmanager.add_password(None, login_data["host"], login_data["user"], login_data["apikey"], is_authenticated = True)
+    req_pwmanager.add_password(
+        None,
+        login_data["host"],
+        login_data["user"],
+        login_data["apikey"],
+        is_authenticated = True)
     req_handler = urllib.request.HTTPBasicAuthHandler(req_pwmanager)
     req_opener = urllib.request.build_opener(req_handler)
     urllib.request.install_opener(req_opener)
@@ -76,7 +82,9 @@ def make_aql_request(login_data, aql_query):
     :return dict result: Dictionary containing the result of the AQL query, if not None.
     """
     req_url = "/artifactory/api/search/aql"
-    req_data = "items.find({}).include({})".format(json.dumps(aql_query["find"]), ",".join(["\"{}\"".format(item) for item in aql_query["include"]]))
+    req_data = "items.find({}).include({})".format(
+        json.dumps(aql_query["find"]),
+        ",".join(["\"{}\"".format(item) for item in aql_query["include"]]))
     resp_str = make_api_request(login_data, "POST", req_url, data = req_data, is_data_json = False)
     if resp_str is not None:
         resp_str = json.loads(resp_str)
@@ -155,7 +163,13 @@ def make_item_copy_request(login_data, source_repo, destination_repo, path, name
     :param str path: The path in the repository where the artifact is located.
     :param str name: The name of the artifact.
     """
-    req_url = "/artifactory/api/copy/{}/{}/{}?to=/{}/{}/{}".format(source_repo, path, name, destination_repo, path, name)
+    req_url = "/artifactory/api/copy/{}/{}/{}?to=/{}/{}/{}".format(
+        source_repo,
+        path,
+        name,
+        destination_repo,
+        path,
+        name)
     resp_str = make_api_request(login_data, "POST", req_url)
     # FIXME: Handle an failed copy
 
@@ -198,8 +212,12 @@ def copy_artifacts_to_repo(login_data, source_repo_name, destination_repo_name):
         make_item_copy_request(login_data, source_repo_name, destination_repo_name, item["path"], item["name"])
         tmp_num_copied = tmp_num_copied + 1
         if (tmp_num_copied % 100) == 0:
-            logging.info("Number of artifacts copied: %d (%d)", tmp_num_copied, int(tmp_num_copied * 100 / tmp_num_total))
-    logging.info("Number of artifacts copied: %d (%d)", tmp_num_copied, int(tmp_num_copied * 100 / tmp_num_total))
+            logging.info("Number of artifacts copied: %d (%d)",
+                         tmp_num_copied,
+                         int(tmp_num_copied * 100 / tmp_num_total))
+    logging.info("Number of artifacts copied: %d (%d)",
+                 tmp_num_copied,
+                 int(tmp_num_copied * 100 / tmp_num_total))
 
 ### CLASSES ###
 
@@ -252,10 +270,11 @@ def main():
             logging.error("All three names are the same, which is invalid.  Exiting.")
             sys.exit(3)
 
-    tmp_login_data = {}
-    tmp_login_data["user"] = args.user
-    tmp_login_data["apikey"] = args.apikey
-    tmp_login_data["host"] = args.host
+    tmp_login_data = {
+        "user": args.user,
+        "apikey": args.apikey,
+        "host": args.host
+    }
 
     # Gather data from the source repository.
     logging.info("Gathering repo information for the source repo: %s", source_repo_name)
@@ -278,7 +297,9 @@ def main():
         create_local_repo(tmp_login_data, temporary_repo_definition)
 
         # Copy artifacts to temporary repo from source repo.
-        logging.info("Copying the artifacts from source repo: %s to temporary repo: %s", source_repo_name, temporary_repo_name)
+        logging.info("Copying the artifacts from source repo: %s to temporary repo: %s",
+                     source_repo_name,
+                     temporary_repo_name)
         copy_artifacts_to_repo(tmp_login_data, source_repo_name, temporary_repo_name)
 
         # Delete the source repo (source and destination repos have the same name).
@@ -295,12 +316,16 @@ def main():
     # If temporary_repo_name:
     if temporary_repo_name is not None:
         # Copy the artifacts to the destination repo from the temporary repo.
-        logging.info("Copying the artifacts from temporary repo: %s to destination repo: %s", temporary_repo_name, destination_repo_name)
+        logging.info("Copying the artifacts from temporary repo: %s to destination repo: %s",
+                     temporary_repo_name,
+                     destination_repo_name)
         copy_artifacts_to_repo(tmp_login_data, temporary_repo_name, destination_repo_name)
     # else:
     else:
         # Copy the artifacts to the destination repo from the source repo.
-        logging.info("Copying the artifacts from source repo: %s to destination repo: %s", source_repo_name, destination_repo_name)
+        logging.info("Copying the artifacts from source repo: %s to destination repo: %s",
+                     source_repo_name,
+                     destination_repo_name)
         copy_artifacts_to_repo(tmp_login_data, source_repo_name, destination_repo_name)
 
     # If args.remove_repos:
