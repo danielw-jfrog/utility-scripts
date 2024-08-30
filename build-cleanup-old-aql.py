@@ -191,16 +191,8 @@ def main():
     parser.add_argument("--num-threads", default = os.getenv("NUM_THREADS", "3"),
                         help = "The number of threads to use for making API calls.  Default is 3")
 
-    parser.add_argument("--oracle-user", default = os.getenv("ORACLE_USER", ""),
-                        help = "The username to authenticate to the Oracle Database.")
-    parser.add_argument("--oracle-pass", default = os.getenv("ORACLE_PASS", ""),
-                        help = "The password to authenticate to the Oracle Database.")
-    parser.add_argument("--oracle-host", default = os.getenv("ORACLE_HOST", "localhost"),
-                        help = "The hostname of the Oracle server.")
-    parser.add_argument("--oracle-port", default = os.getenv("ORACLE_PORT", "1521"),
-                        help = "The port of the Oracle server.")
-    parser.add_argument("--oracle-dbname", default = os.getenv("ORACLE_DBNAME", ""),
-                        help = "The name of the database on the Oracle server.")
+    parser.add_argument("--years-older-than", default = "3",
+                        help = "The age, in years, of builds to be cleaned up.")
 
     parser.add_argument("--artifactory-token", default = os.getenv("ARTIFACTORY_TOKEN", ""),
                         help = "Artifactory auth token to use for requests.  Will use ARTIFACTORY_TOKEN if not specified.")
@@ -222,31 +214,10 @@ def main():
     config_data["dry_run"] = True if args.dry_run else False
     config_data["arti_token"] = str(args.artifactory_token)
     config_data["arti_host"] = str(args.artifactory_host)
-    config_data["oracle_user"] = str(args.oracle_user)
-    config_data["oracle_pass"] = str(args.oracle_pass)
-    config_data["oracle_host"] = str(args.oracle_host)
-    config_data["oracle_port"] = int(args.oracle_port)
-    config_data["oracle_dbname"] = str(args.oracle_dbname)
     logging.debug("Config Data: %s", config_data)
 
-    # Adding a connection to the config data so we only pass one around
-    logging.debug("Getting a list of builds to clean up.")
-    logging.debug("Opening database connection.")
-    config_data["db_connection"] = oracledb.connect(
-        user = config_data["oracle_user"],
-        password = config_data["oracle_pass"],
-        host = config_data["oracle_host"],
-        port = config_data["oracle_port"],
-        service_name = config_data["oracle_dbname"]
-    )
-
     # Get the list of builds to delete
-    builds_to_delete_list = get_empty_builds(config_data)
-
-    # Clean up database connection
-    logging.debug("Closing database connection.")
-    config_data["db_connection"].close()
-    config_data["db_connection"] = None
+    builds_to_delete_list = get_old_builds(config_data, int(args.years_older_than))
 
     # Queue up the build items to delete
     logging.debug("Queuing the data for the threads.")
