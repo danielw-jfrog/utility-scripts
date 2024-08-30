@@ -11,6 +11,9 @@
 # 		SELECT '?' FROM nodes n WHERE n.md5_actual = ba.md5
 # 	);
 
+# FIXME: Add dry run
+# FIXME: Duplicate script for build-info older than x years input (default to 3 years)
+
 ### IMPORTS ###
 import argparse
 import logging
@@ -99,9 +102,10 @@ def del_empty_build(login_data, build_to_delete):
     number_str = ",".join(build_to_delete["numbers"])
 
     req_url = "/artifactory/api/build/{}?buildNumbers={}".format(build_to_delete["name"], number_str)
-    logging.debug("Deleting builds %s %s", build_to_delete["name"], number_str)
-    resp_str = make_api_request(login_data, "DELETE", req_url)
-    logging.debug("Result of delete builds request: %s", resp_str)
+    logging.debug("Deleting build %s %s", build_to_delete["name"], number_str)
+    if login_data["dry_run"] == False:
+        resp_str = make_api_request(login_data, "DELETE", req_url)
+        logging.debug("Result of delete builds request: %s", resp_str)
 
 ### CLASSES ###
 class ThreadWrapper:
@@ -173,6 +177,9 @@ def main():
     parser = argparse.ArgumentParser(description = parser_description, formatter_class = argparse.RawTextHelpFormatter)
     parser.add_argument("-v", "--verbose", action = "store_true")
 
+    parser.add_argument("--dry-run", action = "store_true",
+                        help = "Bypass the Delete API call for verification purposes.")
+
     parser.add_argument("--num-threads", default = os.getenv("NUM_THREADS", "3"),
                         help = "The number of threads to use for making API calls.  Default is 3")
 
@@ -204,6 +211,7 @@ def main():
     # Set up the config data
     logging.debug("Preparing the environment.")
     config_data = {}
+    config_data["dry_run"] = True if args.dry_run else False
     config_data["arti_token"] = str(args.artifactory_token)
     config_data["arti_host"] = str(args.artifactory_host)
     config_data["oracle_user"] = str(args.oracle_user)
