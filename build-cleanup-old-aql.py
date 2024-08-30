@@ -1,18 +1,8 @@
 #!/usr/bin/env python3
 
-# This script requires the 'oracledb' driver that can be installed via 'pip install --upgrade oracledb'
-
-# The following is the query that this script is based around:
-#   SELECT b.build_name, b.build_number, b.build_date
-#   FROM builds as b
-# 	JOIN build_modules as bm ON bm.build_id = b.build_id
-# 	JOIN build_artifacts as ba ON ba.module_id = bm.module_id
-# 	WHERE NOT EXISTS (
-# 		SELECT '?' FROM nodes n WHERE n.md5_actual = ba.md5
-# 	);
-
 ### IMPORTS ###
 import argparse
+import json
 import logging
 import os
 import queue
@@ -20,8 +10,6 @@ import threading
 import time
 import urllib.request
 import urllib.error
-
-import oracledb
 
 ### GLOBALS ###
 
@@ -58,27 +46,50 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
         logging.error("Request Failed (URLError): %s", ex.reason)
     return resp
 
-def get_empty_builds(config_data):
-    statement = """
-SELECT b.build_name, b.build_number, b.build_date
-FROM builds as b
-JOIN build_modules as bm ON bm.build_id = b.build_id
-JOIN build_artifacts as ba ON ba.module_id = bm.module_id
-WHERE NOT EXISTS (
-    SELECT '?' FROM nodes n WHERE n.md5_actual = ba.md5
-)
-"""
-    dbconn = config_data["db_connection"]
-    cursor = dbconn.cursor()
-    cursor.execute(statement)
-    rows = cursor.fetchmany(size = 10000)
-    logging.debug("Empty Builds: %s", rows)
+def make_aql_request(login_data, aql_query):
+    """
+    Form the AQL query into the API request and send that request.
+
+    :param dict login_data: Dictionary containing "user", "apikey", and "host" values.
+    :param dict aql_query: Dictionary containing the AQL query parameters.
+    :return dict result: Dictionary containing the result of the AQL query, if not None.
+    """
+    req_url = "/artifactory/api/search/aql"
+    req_data = "{}.find({}).include({})".format(
+        aql_query["type"],
+        json.dumps(aql_query["find"]),
+        ",".join(["\"{}\"".format(item) for item in aql_query["include"]]))
+    resp_str = make_api_request(login_data, "POST", req_url, data = req_data, is_data_json = False)
+    if resp_str is not None:
+        resp_str = json.loads(resp_str)
+    return resp_str
+
+def get_old_builds(config_data, before_years):
+    # AQL to get list of artifacts.
+    aql_query = {
+        "type": "build",
+        "find": {
+            "created": {
+                "$before": "{}years".format(int(before_years))
+            }
+        },
+        "include": [
+            "name",
+            "number",
+            "created"
+        ]
+    }
+    aql_result = make_aql_request(config_data, aql_query)
+    logging.debug("AQL Query Result: %s", aql_result)
+
+    tmp_num_total = aql_result["range"]["total"]
+    logging.info("Number of builds to clean up: %d", tmp_num_total)
     result = []
-    for row in rows:
+    for item in aql_result["results"]:
         result.append({
-            "name": row.build_name,
-            "number": row.build_number,
-            "date": row.build_date
+            "name": item["name"],
+            "number": item["number"],
+            "date": item["created"]
         })
     return result
 
