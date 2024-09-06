@@ -55,6 +55,7 @@ def make_aql_request(login_data, aql_query):
     :return dict result: Dictionary containing the result of the AQL query, if not None.
     """
     req_url = "/artifactory/api/search/aql"
+    # FIXME: Should add .sort() and .limit() to the AQL request.
     req_data = "{}.find({}).include({})".format(
         aql_query["type"],
         json.dumps(aql_query["find"]),
@@ -67,7 +68,7 @@ def make_aql_request(login_data, aql_query):
 def get_old_builds(config_data, before_years):
     # AQL to get list of artifacts.
     aql_query = {
-        "type": "build",
+        "type": "builds",
         "find": {
             "created": {
                 "$before": "{}years".format(int(before_years))
