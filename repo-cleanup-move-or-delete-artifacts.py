@@ -115,7 +115,8 @@ def get_artifact_list(login_data, remote_repo_name):
         },
         "include": [
             "path", "name"
-        ]
+        ],
+        "type": "items"
     }
     aql_result = make_aql_request(login_data, aql_query)
     logging.debug("AQL Query Result: %s", aql_result)
@@ -251,7 +252,7 @@ def main():
 
     parser.add_argument("--move-to-repo",
                         help = "Repository to move the contents of the remote repositories into.  If not specified, the contents will be deleted.")
-    parser.add_argument("repos-to-clear",
+    parser.add_argument("repos",
                         help = "Comma separated list of repositories to cleanup up.  If remote repos are to be cleaned up, please use the -cache repository.")
 
     args = parser.parse_args()
@@ -273,7 +274,7 @@ def main():
         config_data["move_to_repo"] = str(args.move_to_repo)
 
     # Split the list of remote repos on commas and check number specified
-    repo_list = str(args.repos_to_clear).split(',')
+    repo_list = str(args.repos).split(',')
 
     # Get the list of files in each of the caches in the remote repos
     artifacts_to_process = queue.Queue()
