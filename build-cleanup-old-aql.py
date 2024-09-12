@@ -170,6 +170,7 @@ class BuildDeleter(threading.Thread):
                 self.stop()
                 break # Force the while loop to end.
 
+            self.logger.debug("-- item: %s", item)
             del_empty_build(self.login_data, item)
 
             self._input_queue.task_done()
@@ -223,7 +224,9 @@ def main():
     # Queue up the build items to delete
     logging.debug("Queuing the data for the threads.")
     work_queue = queue.Queue()
+    logging.debug("builds_to_delete_list: %s", builds_to_delete_list)
     builds_to_delete = reorganise_builds(builds_to_delete_list)
+    logging.debug("builds_to_delete: %s", builds_to_delete)
     for item in builds_to_delete:
         work_queue.put(item)
 
