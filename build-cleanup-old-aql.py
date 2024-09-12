@@ -88,9 +88,9 @@ def get_old_builds(config_data, before_years):
     result = []
     for item in aql_result["results"]:
         result.append({
-            "name": item["name"],
-            "number": item["number"],
-            "date": item["created"]
+            "name": item["build.name"],
+            "number": item["build.number"],
+            "date": item["build.created"]
         })
     return result
 
