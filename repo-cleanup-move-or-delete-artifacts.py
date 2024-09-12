@@ -273,7 +273,7 @@ def main():
         config_data["move_to_repo"] = str(args.move_to_repo)
 
     # Split the list of remote repos on commas and check number specified
-    repo_list = str(args.remote_repos).split(',')
+    repo_list = str(args.repos_to_clear).split(',')
 
     # Get the list of files in each of the caches in the remote repos
     artifacts_to_process = queue.Queue()
