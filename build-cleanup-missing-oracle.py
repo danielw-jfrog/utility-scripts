@@ -58,7 +58,7 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
         logging.error("Request Failed (URLError): %s", ex.reason)
     return resp
 
-def get_empty_builds(config_data):
+def get_empty_builds(config_data, num_limit = 10000):
     statement = """
 SELECT b.build_name, b.build_number, b.build_date
 FROM builds as b
@@ -71,7 +71,7 @@ WHERE NOT EXISTS (
     dbconn = config_data["db_connection"]
     cursor = dbconn.cursor()
     cursor.execute(statement)
-    rows = cursor.fetchmany(size = 10000)
+    rows = cursor.fetchmany(size = int(num_limit))
     logging.debug("Empty Builds: %s", rows)
     result = []
     for row in rows:
@@ -177,6 +177,9 @@ def main():
     parser.add_argument("--dry-run", action = "store_true",
                         help = "Bypass the Delete API call for verification purposes.")
 
+    parser.add_argument("--num-limit", default = os.getenv("NUM_LIMIT", "10000"),
+                        help = "The number of entries to get from the database for processing.  Default is 10000")
+
     parser.add_argument("--num-threads", default = os.getenv("NUM_THREADS", "3"),
                         help = "The number of threads to use for making API calls.  Default is 3")
 
@@ -230,7 +233,7 @@ def main():
     )
 
     # Get the list of builds to delete
-    builds_to_delete_list = get_empty_builds(config_data)
+    builds_to_delete_list = get_empty_builds(config_data, int(args.num_limit))
 
     # Clean up database connection
     logging.debug("Closing database connection.")
