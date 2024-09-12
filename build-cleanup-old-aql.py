@@ -56,16 +56,18 @@ def make_aql_request(login_data, aql_query):
     """
     req_url = "/artifactory/api/search/aql"
     # FIXME: Should add .sort() and .limit() to the AQL request.
-    req_data = "{}.find({}).include({})".format(
+    req_data = "{}.find({}).include({}).limit({})".format(
         aql_query["type"],
         json.dumps(aql_query["find"]),
-        ",".join(["\"{}\"".format(item) for item in aql_query["include"]]))
+        ",".join(["\"{}\"".format(item) for item in aql_query["include"]]),
+        aql_query["limit"]
+    )
     resp_str = make_api_request(login_data, "POST", req_url, data = req_data, is_data_json = False)
     if resp_str is not None:
         resp_str = json.loads(resp_str)
     return resp_str
 
-def get_old_builds(config_data, before_years):
+def get_old_builds(config_data, before_years, num_limit = 1000):
     # AQL to get list of artifacts.
     aql_query = {
         "type": "builds",
@@ -78,7 +80,8 @@ def get_old_builds(config_data, before_years):
             "name",
             "number",
             "created"
-        ]
+        ],
+        "limit": num_limit
     }
     aql_result = make_aql_request(config_data, aql_query)
     logging.debug("AQL Query Result: %s", aql_result)
@@ -189,6 +192,9 @@ def main():
 
     parser.add_argument("--dry-run", action = "store_true",
                         help = "Bypass the Delete API call for verification purposes.")
+
+    parser.add_argument("--num-limit", default = os.getenv("NUM_LIMIT", "1000"),
+                        help = "The number of entries to get from the database for processing.  Default is 1000")
 
     parser.add_argument("--num-threads", default = os.getenv("NUM_THREADS", "3"),
                         help = "The number of threads to use for making API calls.  Default is 3")
