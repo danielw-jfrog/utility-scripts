@@ -289,7 +289,7 @@ def main():
     if args.move_to_repo:
         wrapper = ThreadWrapper(artifacts_to_process, config_data, int(args.num_threads), ArtifactMover)
     else:
-        wrapper = ThreadWrapper(repo_list, config_data, int(args.num_threads), ArtifactDeleter)
+        wrapper = ThreadWrapper(artifacts_to_process, config_data, int(args.num_threads), ArtifactDeleter)
     wrapper.start_threads()
 
     # Idle while the threads are working.
