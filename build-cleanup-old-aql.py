@@ -10,13 +10,14 @@ import threading
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
 
 ### GLOBALS ###
 
 ### FUNCTIONS ###
 def make_api_request(login_data, method, path, data = None, is_data_json = True):
     # Send the request to the JFrog Artifactory API.
-    req_url = "{}{}".format(login_data["arti_host"], path)
+    req_url = "{}{}".format(login_data["arti_host"], urllib.parse.quote_plus(path, safe="/?"))
     req_headers = {}
     if is_data_json:
         req_headers["Content-Type"] = "application/json"
