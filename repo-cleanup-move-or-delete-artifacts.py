@@ -63,7 +63,8 @@ def make_aql_request(login_data, aql_query):
 
 def create_directory(login_data, directory_path):
     # Make a request to download the artifact from Artifactory.
-    req_url = "/artifactory/{}".format(directory_path)
+    # NOTE: The following slash is key to making a directory.
+    req_url = "/artifactory/{}/".format(directory_path)
     logging.debug("Creating directory %s", directory_path)
     if login_data["dry_run"] == False:
         resp_str = make_api_request(login_data, "PUT", req_url)
