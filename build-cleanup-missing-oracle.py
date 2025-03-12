@@ -101,6 +101,7 @@ def del_empty_build(login_data, build_to_delete):
 
     req_url = "/artifactory/api/build/{}?buildNumbers={}".format(build_to_delete["name"], number_str)
     logging.debug("Deleting build %s %s", build_to_delete["name"], number_str)
+    logging.debug("  URL: %s", req_url)
     if login_data["dry_run"] == False:
         resp_str = make_api_request(login_data, "DELETE", req_url)
         logging.debug("Result of delete builds request: %s", resp_str)
@@ -235,6 +236,7 @@ def main():
 
     # Get the list of builds to delete
     builds_to_delete_list = get_empty_builds(config_data, int(args.num_limit))
+    logging.info("Number of Build to clean up: %d", len(builds_to_delete_list))
     logging.debug("after db - builds_to_delete_list: %s", builds_to_delete_list)
 
     # Clean up database connection
