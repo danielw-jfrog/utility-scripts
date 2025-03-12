@@ -76,9 +76,9 @@ WHERE NOT EXISTS (
     result = []
     for row in rows:
         result.append({
-            "name": row.build_name,
-            "number": row.build_number,
-            "date": row.build_date
+            "name": row[0], # row.build_name
+            "number": row[1], # row.build_number
+            "date": row[2], # row.build_date
         })
     return result
 
