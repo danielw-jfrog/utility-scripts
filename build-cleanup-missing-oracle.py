@@ -248,10 +248,7 @@ def main():
     builds_to_delete = reorganise_builds(builds_to_delete_list)
     logging.debug("after reorg - builds_to_delete: %s", builds_to_delete)
     for item in builds_to_delete:
-        work_queue.put({
-            "name": item,
-            "numbers": builds_to_delete[item]
-        })
+        work_queue.put(builds_to_delete[item])
 
     # Run the threads
     logging.debug("Starting threads.")
