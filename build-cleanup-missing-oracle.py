@@ -96,6 +96,7 @@ def reorganise_builds(builds_to_delete_list):
 
 def del_empty_build(login_data, build_to_delete):
     # build_to_delete contains a dict: { "name": "<build_name>", "numbers": "<set_of_numbers>" }
+    logging.debug("build_to_delete: %s", build_to_delete)
     number_str = ",".join(build_to_delete["numbers"])
 
     req_url = "/artifactory/api/build/{}?buildNumbers={}".format(build_to_delete["name"], number_str)
@@ -234,6 +235,7 @@ def main():
 
     # Get the list of builds to delete
     builds_to_delete_list = get_empty_builds(config_data, int(args.num_limit))
+    logging.debug("after db - builds_to_delete_list: %s", builds_to_delete_list)
 
     # Clean up database connection
     logging.debug("Closing database connection.")
@@ -244,6 +246,7 @@ def main():
     logging.debug("Queuing the data for the threads.")
     work_queue = queue.Queue()
     builds_to_delete = reorganise_builds(builds_to_delete_list)
+    logging.debug("after reorg - builds_to_delete: %s", builds_to_delete)
     for item in builds_to_delete:
         work_queue.put(item)
 
