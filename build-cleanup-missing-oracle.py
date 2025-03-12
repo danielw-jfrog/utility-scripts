@@ -61,9 +61,9 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
 def get_empty_builds(config_data, num_limit = 10000):
     statement = """
 SELECT b.build_name, b.build_number, b.build_date
-FROM builds as b
-JOIN build_modules as bm ON bm.build_id = b.build_id
-JOIN build_artifacts as ba ON ba.module_id = bm.module_id
+FROM builds b
+JOIN build_modules bm ON bm.build_id = b.build_id
+JOIN build_artifacts ba ON ba.module_id = bm.module_id
 WHERE NOT EXISTS (
     SELECT '?' FROM nodes n WHERE n.md5_actual = ba.md5
 )
