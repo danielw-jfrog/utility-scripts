@@ -68,10 +68,12 @@ def get_remote_repo(login_data, repo_key):
     :param str repo_key: String containing the key or name of the remote repo.
     :return dict: Dictionary containing repository config.
     """
-    req_url = "/artifactory/api/repository/{}".format(repo_key)
+    req_url = "/artifactory/api/repositories/{}".format(repo_key)
     logging.debug("GETing repo config: %s", repo_key)
     resp_str = make_api_request(login_data, "GET", req_url)
     logging.debug("  response: %s", resp_str)
+    if resp_str is None:
+        return None
     resp_dict = json.loads(resp_str)
     return resp_dict
 
@@ -89,7 +91,7 @@ def update_remote_repo(login_data, repo_key, repo_url):
         "url": repo_url
     }
     req_data = json.dumps(req_json)
-    req_url = "/artifactory/api/repository/{}".format(repo_key)
+    req_url = "/artifactory/api/repositories/{}".format(repo_key)
     logging.debug("POSTing update repo: %s", repo_key)
     resp_str = make_api_request(login_data, "POST", req_url, req_data)
     logging.debug("  response: %s", resp_str)
@@ -99,7 +101,7 @@ def update_remote_repo(login_data, repo_key, repo_url):
 ### MAIN ###
 def main():
     parser_description = """
-    Create an access token for a user scope with write permissions.
+    Update the remote repos from the JSON with the URLs from the JSON.
     """
 
     parser = argparse.ArgumentParser(description = parser_description, formatter_class = argparse.RawTextHelpFormatter)
@@ -115,6 +117,8 @@ def main():
                         help = "Starting entry in the JSON list in the input file.  Defaults to 0.")
     parser.add_argument("--stop_index", type = int, default = -1,
                         help = "Stopping entry in the JSON list in the input file.  Defaults to last.")
+    parser.add_argument("--repo_prefix", default = "",
+                        help = "Add a prefix to the repository name.")
     parser.add_argument("input_json", help = "JSON file containing the projects to update.")
     args = parser.parse_args()
 
@@ -129,8 +133,8 @@ def main():
 
     config_data = {}
     config_data["dry_run"] = True if args.dry_run else False
-    config_data["arti_token"] = str(args.artifactory_token)
-    config_data["arti_host"] = str(args.artifactory_host)
+    config_data["arti_token"] = str(args.token)
+    config_data["arti_host"] = str(args.host)
     logging.debug("Config Data: %s", config_data)
 
     # Import the JSON file with the format:
@@ -142,6 +146,7 @@ def main():
     # ]
     input_json_path = pathlib.Path(args.input_json)
     output_json_path = pathlib.Path(input_json_path.parent, "{}_old_remotes.json".format(input_json_path.stem))
+    repo_prefix = str(args.repo_prefix)
     with open(input_json_path, 'r') as ij:
         input_data = json.load(ij)
 
@@ -158,12 +163,14 @@ def main():
     logging.debug("Using range from %d to %d", start_index, stop_index)
     for i in range(start_index, stop_index):
         # 'i' is the index into the input_data
-        tmp_repo_key = input_data[i]["key"]
+        tmp_repo_key = "{}{}".format(repo_prefix, input_data[i]["key"])
         tmp_package_type = input_data[i]["packageType"]
         tmp_repo_url = input_data[i]["url"]
 
         # Get the current repo config to save for later
         tmp_current_config = get_remote_repo(config_data, tmp_repo_key)
+        if tmp_current_config is None:
+            continue
 
         # Update the repo
         update_remote_repo(config_data, tmp_repo_key, tmp_repo_url)
@@ -180,7 +187,7 @@ def main():
     if len(modified_data) > 0:
         logging.info("Entries Modified, outputing new JSON")
         with open(output_json_path, 'w') as oj:
-            json.dump(modified_data, oj)
+            json.dump(modified_data, oj, indent = 2)
 
 if __name__ == "__main__":
     main()

@@ -159,7 +159,7 @@ def main():
     if len(modified_data) > 0:
         logging.info("Entries Modified, outputing new JSON")
         with open(output_json_path, 'w') as oj:
-            json.dump(modified_data, oj)
+            json.dump(modified_data, oj, indent = 2)
 
 if __name__ == "__main__":
     main()
