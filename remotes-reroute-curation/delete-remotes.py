@@ -59,7 +59,7 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
         logging.error("Request Failed (URLError): %s", ex.reason)
     return resp
 
-def create_remote_repo(login_data, repo_key, package_type, repo_url):
+def delete_remote_repo(login_data, repo_key):
     """
     Create a remote repo using the supplied info.
     https://jfrog.com/help/r/jfrog-rest-apis/create-repository
@@ -70,18 +70,9 @@ def create_remote_repo(login_data, repo_key, package_type, repo_url):
     :param str package_type: String containing the package type of the remote repo.
     :param str repo_url: String containing the URL for the remote repo.
     """
-    req_json = {
-        "key": repo_key,
-        "rclass": "remote",
-        "packageType": package_type,
-        "url": repo_url
-    }
-    if package_type in ["nuget", "NuGet", "NUGET"]:
-        req_json["downloadContextPath"] = "api/v2/package"
-    req_data = json.dumps(req_json)
     req_url = "/artifactory/api/repositories/{}".format(repo_key)
-    logging.debug("PUTing create repo: %s", repo_key)
-    resp_str = make_api_request(login_data, "PUT", req_url, req_data)
+    logging.debug("DELETEing repo: %s", repo_key)
+    resp_str = make_api_request(login_data, "DELETE", req_url)
     logging.debug("  response: %s", resp_str)
 
 ### CLASSES ###
@@ -89,7 +80,7 @@ def create_remote_repo(login_data, repo_key, package_type, repo_url):
 ### MAIN ###
 def main():
     parser_description = """
-    Create remote repos from the imput JSON.
+    Delete the list of remote repos.
     """
 
     parser = argparse.ArgumentParser(description = parser_description, formatter_class = argparse.RawTextHelpFormatter)
@@ -133,7 +124,7 @@ def main():
     #   ...
     # ]
     input_json_path = pathlib.Path(args.input_json)
-    output_json_path = pathlib.Path(input_json_path.parent, "{}_new_remotes.json".format(input_json_path.stem))
+    output_json_path = pathlib.Path(input_json_path.parent, "{}_deleted_remotes.json".format(input_json_path.stem))
     repo_prefix = str(args.repo_prefix)
     with open(input_json_path, 'r') as ij:
         input_data = json.load(ij)
@@ -155,7 +146,7 @@ def main():
         tmp_package_type = input_data[i]["packageType"]
         tmp_repo_url = input_data[i]["url"]
         # FIXME: Do we need to collect the results and do something else?
-        create_remote_repo(config_data, tmp_repo_key, tmp_package_type, tmp_repo_url)
+        delete_remote_repo(config_data, tmp_repo_key)
         # Add an updated version of this entry to the modified data
         modified_data.append({
             "key": tmp_repo_key,
