@@ -20,6 +20,7 @@ import threading
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
 
 import oracledb
 
@@ -99,7 +100,8 @@ def del_empty_build(login_data, build_to_delete):
     logging.debug("build_to_delete: %s", build_to_delete)
     number_str = ",".join(build_to_delete["numbers"])
 
-    req_url = "/artifactory/api/build/{}?buildNumbers={}".format(build_to_delete["name"], number_str)
+    quoted_build_name = urllib.parse.quote(build_to_delete["name"])
+    req_url = "/artifactory/api/build/{}?buildNumbers={}".format(quoted_build_name, number_str)
     logging.debug("Deleting build %s %s", build_to_delete["name"], number_str)
     logging.debug("  URL: %s", req_url)
     if login_data["dry_run"] == False:
