@@ -77,7 +77,7 @@ def get_remote_repo(login_data, repo_key):
     resp_dict = json.loads(resp_str)
     return resp_dict
 
-def update_remote_repo(login_data, repo_key, repo_url):
+def update_remote_repo(login_data, repo_key, repo_url, pypi_reg_url = None):
     """
     Update a remote repo using the supplied info.
     https://jfrog.com/help/r/jfrog-rest-apis/?
@@ -90,6 +90,8 @@ def update_remote_repo(login_data, repo_key, repo_url):
         "key": repo_key,
         "url": repo_url
     }
+    if pypi_reg_url is not None:
+        req_json["pyPIRegistryUrl"] = pypi_reg_url
     req_data = json.dumps(req_json)
     req_url = "/artifactory/api/repositories/{}".format(repo_key)
     logging.debug("POSTing update repo: %s", repo_key)
@@ -173,7 +175,19 @@ def main():
             continue
 
         # Update the repo
-        update_remote_repo(config_data, tmp_repo_key, tmp_repo_url)
+        if tmp_package_type in ["pypi", "Pypi", "PYPI"]:
+            tmp_pypi_reg = "https://pypi.org"
+            if ".jfrog.io" in tmp_repo_url:
+                # This is an artifactory smart repo, so make the Registry URL
+                # https://xxx.jfrog.io/artifactory/repo-name
+                tmp_repo_split = tmp_repo_url.split("/")
+                tmp_repo_split.insert(4, "api")
+                tmp_repo_split.insert(5, "pypi")
+                tmp_repo_split.append("")
+                tmp_pypi_reg = "/".join(tmp_repo_split)
+            update_remote_repo(config_data, tmp_repo_key, tmp_repo_url, tmp_pypi_reg)
+        else:
+            update_remote_repo(config_data, tmp_repo_key, tmp_repo_url)
 
         # Add an updated version of this entry to the modified data
         modified_data.append({
