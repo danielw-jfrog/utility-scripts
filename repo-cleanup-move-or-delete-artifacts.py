@@ -168,6 +168,40 @@ class ThreadWrapper:
         for thread in self._threads:
             thread.join()
 
+class ArtifactCopier(threading.Thread):
+    def __init__(self, input_queue, login_data):
+        super().__init__()
+        self.logger = logging.getLogger(type(self).__name__)
+        self.login_data = login_data
+        self._shutdown = False
+        # Input Queue Items: {"repo": "<repo_name>", "path": "<artifact_path>", "name": "<artifact_name>"}
+        self._input_queue = input_queue
+
+    def run(self):
+        self.logger.debug("Starting the ArtifactCopier thread.")
+        while not self._shutdown:
+            # Get a file_meta from the queue
+            try:
+                item = self._input_queue.get_nowait()
+            except queue.Empty:
+                self.logger.debug("No more work, shutting down.")
+                self.stop()
+                break # Force the while loop to end.
+
+            old_artifact_path = "{}/{}/{}".format(item["repo"], item["path"], item["name"])
+            new_artifact_path = "{}/{}/{}".format(self.login_data["copy_to_repo"], item["path"], item["name"])
+            new_directory = "{}/{}".format(self.login_data["copy_to_repo"], item["path"])
+
+            create_directory(self.login_data, new_directory)
+            copy_artifact(self.login_data, old_artifact_path, new_artifact_path)
+
+            self._input_queue.task_done()
+        self.logger.debug("Ending the ArtifactCopier thread.")
+
+    def stop(self):
+        self.logger.debug("Shutting down the ArtifactMover thread.")
+        self._shutdown = True
+
 class ArtifactMover(threading.Thread):
     def __init__(self, input_queue, login_data):
         super().__init__()
@@ -251,6 +285,8 @@ def main():
     parser.add_argument("--host", default = os.getenv("ARTIFACTORY_HOST", ""),
                         help = "Artifactory host URL (e.g. https://artifactory.example.com/) to use for requests.  Will use ARTIFACTORY_HOST if not specified.")
 
+    parser.add_argument("--copy-to-repo",
+                        help = "Repository to copy the contents of the remote repositories into.  If not specified, the contents will be deleted.")
     parser.add_argument("--move-to-repo",
                         help = "Repository to move the contents of the remote repositories into.  If not specified, the contents will be deleted.")
     parser.add_argument("repos",
@@ -271,6 +307,8 @@ def main():
     config_data["dry_run"] = True if args.dry_run else False
     config_data["arti_token"] = args.token
     config_data["arti_host"] = args.host
+    if args.copy_to_repo:
+        config_data["copy_to_repo"] = str(args.copy_to_repo)
     if args.move_to_repo:
         config_data["move_to_repo"] = str(args.move_to_repo)
 
@@ -287,7 +325,9 @@ def main():
     # Create the threads that will process the artifacts
     logging.debug("Starting threads.")
     wrapper = None
-    if args.move_to_repo:
+    if args.copy_to_repo:
+        wrapper = ThreadWrapper(artifacts_to_process, config_data, int(args.num_threads), ArtifactCopier)
+    elif args.move_to_repo:
         wrapper = ThreadWrapper(artifacts_to_process, config_data, int(args.num_threads), ArtifactMover)
     else:
         wrapper = ThreadWrapper(artifacts_to_process, config_data, int(args.num_threads), ArtifactDeleter)
