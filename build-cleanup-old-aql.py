@@ -108,6 +108,23 @@ def reorganise_builds(builds_to_delete_list):
                 "numbers": set()
             }
         builds_to_delete[item["name"]]["numbers"].add(str(item["number"]))
+
+    # NOTE: Some of these builds have 1000 or more build numbers to delete, which causes 400 errors (likely due to the URL being too long).
+    #       Below splits the build number sets into smaller sets.
+    for item in builds_to_delete:
+        if len(builds_to_delete[item]["numbers"]) > 100:
+            logging.debug("Having to split build numbers for build: %s, count: %s", builds_to_delete[item]["name"], len(builds_to_delete[item]["numbers"]))
+            # Split the list to 100 item lists
+            # Add each of the 100 item lists back with a number appended to the key
+            # Remove the original
+            list_numbers = list(builds_to_delete[item]["numbers"])
+            for i in range(0, len(list_numbers), 100):
+                new_key = "{}-{}".format(item, i)
+                builds_to_delete[new_key] = {}
+                builds_to_delete[new_key]["name"] = builds_to_delete[item]["name"]
+                builds_to_delete[new_key]["numbers"] = set(list_numbers[i:i+100])
+            del builds_to_delete[item]
+
     return builds_to_delete
 
 def del_empty_build(login_data, build_to_delete):
@@ -212,7 +229,7 @@ def main():
 
     # Set up logging
     logging.basicConfig(
-        format = "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s: %(message)s",
+        format = "%(asctime)s:%(levelname)s:%(thread)d-%(threadName)s:%(name)s:%(funcName)s: %(message)s",
         level = logging.DEBUG if args.verbose else logging.INFO
     )
     logging.debug("Args: %s", args)
