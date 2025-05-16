@@ -111,6 +111,7 @@ def reorganise_builds(builds_to_delete_list):
 
     # NOTE: Some of these builds have 1000 or more build numbers to delete, which causes 400 errors (likely due to the URL being too long).
     #       Below splits the build number sets into smaller sets.
+    builds_to_delete_two = {}
     for item in builds_to_delete:
         if len(builds_to_delete[item]["numbers"]) > 100:
             logging.debug("Having to split build numbers for build: %s, count: %s", builds_to_delete[item]["name"], len(builds_to_delete[item]["numbers"]))
@@ -120,12 +121,11 @@ def reorganise_builds(builds_to_delete_list):
             list_numbers = list(builds_to_delete[item]["numbers"])
             for i in range(0, len(list_numbers), 100):
                 new_key = "{}-{}".format(item, i)
-                builds_to_delete[new_key] = {}
-                builds_to_delete[new_key]["name"] = builds_to_delete[item]["name"]
-                builds_to_delete[new_key]["numbers"] = set(list_numbers[i:i+100])
-            del builds_to_delete[item]
+                builds_to_delete_two[new_key] = {}
+                builds_to_delete_two[new_key]["name"] = builds_to_delete[item]["name"]
+                builds_to_delete_two[new_key]["numbers"] = set(list_numbers[i:i+100])
 
-    return builds_to_delete
+    return builds_to_delete_two
 
 def del_empty_build(login_data, build_to_delete):
     # build_to_delete contains a dict: { "name": "<build_name>", "numbers": "<set_of_numbers>" }
