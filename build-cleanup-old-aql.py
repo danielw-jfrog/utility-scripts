@@ -124,6 +124,9 @@ def reorganise_builds(builds_to_delete_list):
                 builds_to_delete_two[new_key] = {}
                 builds_to_delete_two[new_key]["name"] = builds_to_delete[item]["name"]
                 builds_to_delete_two[new_key]["numbers"] = set(list_numbers[i:i+100])
+        else:
+            logging.debug("Less than 100 so just copying the entry: build: %s, count: %s", builds_to_delete[item]["name"], len(builds_to_delete[item]["numbers"]))
+            builds_to_delete_two[item] = builds_to_delete[item]
 
     return builds_to_delete_two
 
