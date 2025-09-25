@@ -9,7 +9,7 @@ export default async (
     var curation_urls = {
         npm: ["https://registry.npmjs.org"],
         docker: ["https://registry-1.docker.io"],
-        maven: ["https://repo.maven.apache.org/maven2", "https://repo1.maven.org/maven2", "https://maven.google.com"],
+        maven: ["https://repo.maven.apache.org/maven2", "https://repo1.maven.org/maven2", "https://maven.google.com", "https://maven.artifacts.atlassian.com", "https://plugins.gradle.org/m2", "https://repository.jboss.org/maven2", "https://repo.jenkins-ci.org/releases"],
         pypi: ["https://files.pythonhosted.org"],
         go: ["https://proxy.golang.org"],
         nuget: ["https://www.nuget.org"],
@@ -49,7 +49,11 @@ export default async (
               // --- Add error handling here to check the offline setting request ---
             }
           } else {
-            console.warn(`packageType not in curation_urls: ${res.data["REMOTE"][repo_num]["packageType"]}`)
+            console.warn(`packageType not in curation_urls, setting offline: ${res.data["REMOTE"][repo_num]["packageType"]}`)
+            const res3 = await context.clients.platformHttp.post(`/artifactory/api/repositories/${res.data["REMOTE"][repo_num]["key"]}`, {
+                offline: true
+            });
+            // --- Add error handling here to check the offline setting request ---
           }
         }
       }
