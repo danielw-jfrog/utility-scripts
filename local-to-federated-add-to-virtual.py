@@ -6,23 +6,10 @@ import copy
 import json
 import logging
 import os
-import sys
 import urllib.request
 import urllib.error
 
 ### GLOBALS ###
-# REPO_TYPES = ["alpine", "cargo", "composer", "bower", "chef", "cocoapods", "conan", "cran", "debian", "docker", "helm",
-#               "gems", "gitlfs", "go", "gradle", "ivy", "maven", "npm", "nuget", "opkg", "pub", "puppet", "pypi", "rpm",
-#               "sbt", "swift", "terraform", "vagrant", "yum", "generic"]
-
-# LOCAL_REPO_KEYS = ["key", "projectKey", "environments", "rclass", "packageType", "description", "notes",
-#                    "includesPattern", "excludesPattern", "repoLayoutRef", "debianTrivialLayout", "checksumPolicyType",
-#                    "handleReleases", "handleSnapshots", "maxUniqueSnapshots", "maxUniqueTags",
-#                    "snapshotVersionBehavior", "suppressPomConsistencyChecks", "blackedOut", "xrayIndex", "propertySets",
-#                    "archiveBrowsingEnabled", "calculateYumMetadata", "yumRootDepth", "dockerApiVersion",
-#                    "enableFileListsIndexing", "optionalIndexCompressionFormats", "downloadRedirect", "cdnRedirect",
-#                    "blockPushingSchema1", "primaryKeyPairRef", "secondaryKeyPairRef", "priorityResolution"]
-
 FED_REPO_KEYS = ["key", "projectKey", "environments", "rclass", "packageType", "members", "description", "proxy",
                  "disableProxy", "notes", "includePattern", "excludePattern", "repoLayoutRef", "debianTrivialLayout",
                  "checksumPolicyType", "handleReleases", "handleSnapshots", "maxUniqueSnapshots", "maxUniqueTags",
@@ -181,8 +168,6 @@ def main():
                         help = "Artifactory apikey to use for requests.  Will use ARTIFACTORY_APIKEY if not specified.")
     parser.add_argument("--host", default = os.getenv("ARTIFACTORY_HOST", ""),
                         help = "Artifactory host URL (e.g. https://artifactory.example.com/) to use for requests.  Will use ARTIFACTORY_HOST if not specified.")
-
-    # FIXME: Add a dry-run option
 
     args = parser.parse_args()
 
