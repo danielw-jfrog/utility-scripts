@@ -140,6 +140,7 @@ def add_federated_repo_to_virtual_repo(virtual_repo_config, federated_repo_key):
     """
     updated_virt_repo = copy.deepcopy(virtual_repo_config)
     updated_virt_repo["repositories"].insert(0, federated_repo_key)
+    updated_virt_repo["defaultDeploymentRepo"] = federated_repo_key
     return updated_virt_repo
 
 def convert_local_repo_config_to_federated(local_repo_config):
