@@ -1,0 +1,18 @@
+{
+  "conditions": [{
+    "condition_template_id": "isImmature",
+    "name": "poc-condition-01",
+    "param_values": [{
+      "param_id": "package_age_days",
+      "value": 17
+    }]
+  }],
+  "policies": [{
+    "name": "poc-policy-01",
+    "enabled": true,
+    "scope": "all_repos",
+    "policy_action": "dry_run",
+    "condition_id": "poc-condition-01",
+    "waiver_request_config": "forbidden"
+  }]
+}

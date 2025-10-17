@@ -1,0 +1,40 @@
+{
+  "conditions": [{
+    "condition_template_id": "",
+    "name": "",
+    "param_values": [{
+      "param_id": "",
+      "value": ""
+    }]
+  }],
+  "policies": [{
+    "name": "",
+    "enabled": false,
+    "scope": "",
+    "repo_exclude": [""],
+    "repo_include": [""],
+    "pkg_types_include": [""],
+    "policy_action": "",
+    "condition_id": "",
+    "waivers": [{
+      "id": "",
+      "pkg_type": "",
+      "pkg_name": "",
+      "all_versions": false,
+      "pkg_versions": [""],
+      "justification": "",
+      "created_by": "",
+      "created_at": ""
+    }],
+    "label_waivers": [{
+      "id": "",
+      "label": "",
+      "justification": "",
+      "created_by": "",
+      "created_at": ""
+    }],
+    "notify_emails": [""],
+    "waiver_request_config": "",
+    "decision_owners": [""]
+  }]
+}
