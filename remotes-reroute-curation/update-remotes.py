@@ -174,6 +174,15 @@ def main():
         if tmp_current_config is None:
             continue
 
+        # FIXME: Certain repos require special formats for the URL
+        #        - NPM requires the artifactory/api/npm/<repo_key> URL
+        #        - PyPi requires the non api format for the URL, but needs the
+        #             Registry URL set to the api/pypi version.
+        # FIXME: Verify other package type URLs
+        # FIXME: Should add a username & password/token option as it's usually
+        #           needed for access to the curation environment.  Environs for
+        #           all repos, but should there be a per repo version in the JSON?
+
         # Update the repo
         if tmp_package_type in ["pypi", "Pypi", "PYPI"]:
             tmp_pypi_reg = "https://pypi.org"

@@ -309,10 +309,10 @@ def main():
             if (exists):
                 logging.debug("Group exists: %s", group_name)
                 # The following was used to clean up the demo instance.
-                # delete_group(config_data, group_name)
+                delete_group(config_data, group_name)
             else:
                 logging.debug("Group create: %s", group_name)
-                create_group(config_data, group_name)
+                # create_group(config_data, group_name)
 
     # Check for the existence of each permission target.  Create as needed.
     for i in range(len(local_repo_names)):
@@ -322,10 +322,10 @@ def main():
             if (exists):
                 logging.debug("Permission Target exists: %s", perm_target["name"])
                 # The following was used to clean up the demo instance.
-                # delete_perm_target(config_data, perm_target["name"])
+                delete_perm_target(config_data, perm_target["name"])
             else:
                 logging.debug("Permission Target create: %s", perm_target["name"])
-                create_perm_target(config_data, perm_target)
+                # create_perm_target(config_data, perm_target)
 
 if __name__ == "__main__":
     main()
