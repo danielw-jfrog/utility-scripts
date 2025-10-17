@@ -51,7 +51,7 @@ def create_local_repo(login_data, repo_definition):
     """
     req_url = "/artifactory/api/repositories/{}".format(repo_definition["name"])
     req_data = ""
-    if repo_definition["projectkey"] is not None:
+    if "project-key" in repo_definition and repo_definition["project-key"] is not None:
         req_data = "{{\"rclass\":\"local\",\"key\":\"{}\",\"packageType\":\"{}\",\"projectKey\":\"{}\"}}".format(
             repo_definition["name"], repo_definition["type"], repo_definition["project-key"])
     else:
