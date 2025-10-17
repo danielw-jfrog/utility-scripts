@@ -179,6 +179,8 @@ def fix_policy_condition_ids(input_policies, input_conditions):
     """
 
     for policy in input_policies:
+        logging.debug("Fixing policy: %s", policy)
+        # FIXME: Need to handle a string with a number (e.g. "13")
         if type(policy["condition_id"]) == type("string"):
             current_conditions = [x for x in input_conditions if x["name"] == policy["condition_id"]]
             if len(current_conditions) > 1:
@@ -190,8 +192,10 @@ def fix_policy_condition_ids(input_policies, input_conditions):
                 # FIXME: What's the right thing to do?
                 continue
             # This one needs to be a number in a string, not just a number.
-            policy["condition_id"] = int(current_conditions[0]["id"])
-    return str(input_policies)
+            policy["condition_id"] = str(int(current_conditions[0]["id"]))
+        elif type(policy["condition_id"]) == type(1):
+            policy["condition_id"] = str(policy["condition_id"])
+    return input_policies
 
 def compare_policies(input_list, current_list):
     """
@@ -208,6 +212,7 @@ def compare_policies(input_list, current_list):
     for input_policy in input_list:
         # FIXME: There's a better way, but I just need to get this search done
         # NOTE: Policy name is assumed to be unique.
+        logging.debug("input policy: %s", input_policy)
         current_policies = [x for x in current_list if x["name"] == input_policy["name"]]
         if len(current_policies) > 1:
             logging.error("More than one policy with name: %s, name should be unique", input_policy["name"])

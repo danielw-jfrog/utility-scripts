@@ -2,7 +2,7 @@
   "conditions": [
     {
       "condition_template_id": "CVECVSSRange",
-      "name": "poc-condition-w01",
+      "name": "CVSS of 9 to 10 with or without fix version",
       "param_values": [
         {
           "param_id": "vulnerability_cvss_score_range",
@@ -19,7 +19,7 @@
     },
     {
       "condition_template_id": "CVECVSSRange",
-      "name": "poc-condition-w02",
+      "name": "CVSS of 9 to 10 with fix version",
       "param_values": [
         {
           "param_id": "vulnerability_cvss_score_range",
@@ -36,7 +36,7 @@
     },
     {
       "condition_template_id": "CVECVSSRange",
-      "name": "poc-condition-w03",
+      "name": "CVSS of 8 to 9 with or without fix version",
       "param_values": [
         {
           "param_id": "vulnerability_cvss_score_range",
@@ -53,7 +53,7 @@
     },
     {
       "condition_template_id": "CVECVSSRange",
-      "name": "poc-condition-w04",
+      "name": "CVSS of 8 to 9 with fix version",
       "param_values": [
         {
           "param_id": "vulnerability_cvss_score_range",
@@ -70,7 +70,7 @@
     },
     {
       "condition_template_id": "CVECVSSRange",
-      "name": "poc-condition-w05",
+      "name": "CVSS of 6 to 7 with or without fix version",
       "param_values": [
         {
           "param_id": "vulnerability_cvss_score_range",
@@ -87,7 +87,7 @@
     },
     {
       "condition_template_id": "CVECVSSRange",
-      "name": "poc-condition-w06",
+      "name": "CVSS of 6 to 7 with fix version",
       "param_values": [
         {
           "param_id": "vulnerability_cvss_score_range",
@@ -104,7 +104,7 @@
     },
     {
       "condition_template_id": "isImmature",
-      "name": "poc-condition-w07",
+      "name": "Package version is immature 3 days",
       "param_values": [
         {
           "param_id": "package_age_days",
@@ -114,7 +114,7 @@
     },
     {
       "condition_template_id": "isImmature",
-      "name": "poc-condition-w08",
+      "name": "Package version is immature 5 days",
       "param_values": [
         {
           "param_id": "package_age_days",
@@ -124,7 +124,7 @@
     },
     {
       "condition_template_id": "isImmature",
-      "name": "poc-condition-w09",
+      "name": "Package version is immature 10 days",
       "param_values": [
         {
           "param_id": "package_age_days",
@@ -134,7 +134,7 @@
     },
     {
       "condition_template_id": "isImmature",
-      "name": "poc-condition-w10",
+      "name": "Package version is immature 21 days",
       "param_values": [
         {
           "param_id": "package_age_days",
@@ -144,7 +144,7 @@
     },
     {
       "condition_template_id": "isImmature",
-      "name": "poc-condition-w11",
+      "name": "Package version is immature 28 days",
       "param_values": [
         {
           "param_id": "package_age_days",
@@ -154,7 +154,7 @@
     },
     {
       "condition_template_id": "BannedLicenses",
-      "name": "poc-condition-w12",
+      "name": "Banned License MIT",
       "param_values": [
         {
           "param_id": "list_of_package_licenses",
@@ -181,7 +181,7 @@
     },
     {
       "condition_template_id": "BannedLicenses",
-      "name": "poc-condition-w13",
+      "name": "Banned License APACHE",
       "param_values": [
         {
           "param_id": "list_of_package_licenses",
@@ -199,7 +199,7 @@
     },
     {
       "condition_template_id": "BannedLicenses",
-      "name": "poc-condition-w14",
+      "name": "Banned License BSD",
       "param_values": [
         {
           "param_id": "list_of_package_licenses",
@@ -299,42 +299,42 @@
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w01",
+      "condition_id": "CVSS of 9 to 10 with or without fix version",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w09",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w02",
+      "condition_id": "CVSS of 9 to 10 with fix version",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w10",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w03",
+      "condition_id": "CVSS of 8 to 9 with or without fix version",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w11",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w04",
+      "condition_id": "CVSS of 8 to 9 with fix version",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w12",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w05",
+      "condition_id": "CVSS of 6 to 7 with or without fix version",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w13",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w06",
+      "condition_id": "CVSS of 6 to 7 with fix version",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w14",
@@ -376,35 +376,35 @@
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w07",
+      "condition_id": "Package version is immature 3 days",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w20",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w08",
+      "condition_id": "Package version is immature 5 days",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w21",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w09",
+      "condition_id": "Package version is immature 10 days",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w22",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w10",
+      "condition_id": "Package version is immature 21 days",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w23",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w11",
+      "condition_id": "Package version is immature 28 days",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w24",
@@ -439,21 +439,21 @@
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w12",
+      "condition_id": "Banned License MIT",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w29",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w13",
+      "condition_id": "Banned License APACHE",
       "waiver_request_config": "forbidden"
     },{
       "name": "poc-policy-w30",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
-      "condition_id": "poc-condition-w14",
+      "condition_id": "Banned License BSD",
       "waiver_request_config": "forbidden"
     }
   ]
