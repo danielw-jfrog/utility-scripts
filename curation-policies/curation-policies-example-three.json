@@ -1,0 +1,460 @@
+{
+  "conditions": [
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "poc-condition-w01",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            9.5,
+            10.0
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "poc-condition-w02",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            9.5,
+            10.0
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": true
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "poc-condition-w03",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            8.0,
+            8.9
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "poc-condition-w04",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            8.0,
+            8.0
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": true
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "poc-condition-w05",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            6.0,
+            6.9
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "poc-condition-w06",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            6.0,
+            6.9
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": true
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "poc-condition-w07",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "poc-condition-w08",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "poc-condition-w09",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "poc-condition-w10",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 21
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "poc-condition-w11",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 28
+        }
+      ]
+    },
+    {
+      "condition_template_id": "BannedLicenses",
+      "name": "poc-condition-w12",
+      "param_values": [
+        {
+          "param_id": "list_of_package_licenses",
+          "value": [
+            "MIT-0",
+            "MIT-advertising",
+            "MIT-Click",
+            "MIT-CMU",
+            "MIT-enna",
+            "MIT-feh",
+            "MIT-Festival",
+            "MIT-Khronos-old",
+            "MIT-Modern-Variant",
+            "MIT-open-group",
+            "MIT-testregex",
+            "MIT-Wu"
+          ]
+        },
+        {
+          "param_id": "multiple_license_permissive_approach",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "BannedLicenses",
+      "name": "poc-condition-w13",
+      "param_values": [
+        {
+          "param_id": "list_of_package_licenses",
+          "value": [
+            "Apache-1.0",
+            "Apache-1.1",
+            "Apache-2.0"
+          ]
+        },
+        {
+          "param_id": "multiple_license_permissive_approach",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "BannedLicenses",
+      "name": "poc-condition-w14",
+      "param_values": [
+        {
+          "param_id": "list_of_package_licenses",
+          "value": [
+            "0BSD",
+            "BSD-1-Clause",
+            "BSD-2-Clause",
+            "BSD-2-Clause-Darwin",
+            "BSD-2-Clause-first-lines",
+            "BSD-2-Clause-FreeBSD",
+            "BSD-2-Clause-NetBSD",
+            "BSD-2-Clause-Patent",
+            "BSD-2-Clause-pkgconf-disclaimer",
+            "BSD-2-Clause-Views",
+            "BSD-3-Clause",
+            "BSD-3-Clause-acpica",
+            "BSD-3-Clause-No-Military-License",
+            "BSD-3-Clause-No-Nuclear-License",
+            "BSD-3-Clause-No-Nuclear-License-2014",
+            "BSD-3-Clause-No-Nuclear-Warranty",
+            "BSD-3-Clause-Open-MPI",
+            "BSD-3-Clause-Sun",
+            "BSD-4.3RENO",
+            "BSD-4.3TAHOE",
+            "BSD-4-Clause",
+            "BSD-4-Clause-Shortened",
+            "BSD-4-Clause-UC",
+            "BSD-Advertising-Acknowledgement",
+            "BSD-Attribution-HPND-disclaimer",
+            "BSD-Inferno-Nettverk",
+            "BSD-Protection",
+            "BSD-Source-beginning-file",
+            "BSD-Source-Code",
+            "BSD-Systemics",
+            "BSD-Systemics-W3Works"
+          ]
+        },
+        {
+          "param_id": "multiple_license_permissive_approach",
+          "value": false
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "name": "poc-policy-w01",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 1,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w02",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 2,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w03",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 3,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w04",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 4,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w05",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 5,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w06",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 6,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w07",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 7,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w08",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w01",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w09",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w02",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w10",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w03",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w11",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w04",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w12",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w05",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w13",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w06",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w14",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 12,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w15",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 13,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w16",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 14,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w17",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 15,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w18",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 16,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w19",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w07",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w20",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w08",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w21",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w09",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w22",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w10",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w23",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w11",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w24",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 8,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w25",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 9,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w26",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 10,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w27",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": 11,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w28",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w12",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w29",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w13",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-w30",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "dry_run",
+      "condition_id": "poc-condition-w14",
+      "waiver_request_config": "forbidden"
+    }
+  ]
+}

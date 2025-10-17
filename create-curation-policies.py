@@ -190,8 +190,8 @@ def fix_policy_condition_ids(input_policies, input_conditions):
                 # FIXME: What's the right thing to do?
                 continue
             # This one needs to be a number in a string, not just a number.
-            policy["condition_id"] = str(int(current_conditions[0]["id"]))
-    return input_policies
+            policy["condition_id"] = int(current_conditions[0]["id"])
+    return str(input_policies)
 
 def compare_policies(input_list, current_list):
     """
