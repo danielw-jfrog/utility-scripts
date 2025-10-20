@@ -1,0 +1,460 @@
+{
+  "conditions": [
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "CVSS of 9 to 10 with or without fix version",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            9.5,
+            10.0
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "CVSS of 9 to 10 with fix version",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            9.5,
+            10.0
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": true
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "CVSS of 8 to 9 with or without fix version",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            8.0,
+            8.9
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "CVSS of 8 to 9 with fix version",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            8.0,
+            8.0
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": true
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "CVSS of 6 to 7 with or without fix version",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            6.0,
+            6.9
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "CVECVSSRange",
+      "name": "CVSS of 6 to 7 with fix version",
+      "param_values": [
+        {
+          "param_id": "vulnerability_cvss_score_range",
+          "value": [
+            6.0,
+            6.9
+          ]
+        },
+        {
+          "param_id": "apply_only_if_fix_is_available",
+          "value": true
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "Package version is immature 3 days",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "Package version is immature 5 days",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "Package version is immature 10 days",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "Package version is immature 21 days",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 21
+        }
+      ]
+    },
+    {
+      "condition_template_id": "isImmature",
+      "name": "Package version is immature 28 days",
+      "param_values": [
+        {
+          "param_id": "package_age_days",
+          "value": 28
+        }
+      ]
+    },
+    {
+      "condition_template_id": "BannedLicenses",
+      "name": "Banned License MIT",
+      "param_values": [
+        {
+          "param_id": "list_of_package_licenses",
+          "value": [
+            "MIT-0",
+            "MIT-advertising",
+            "MIT-Click",
+            "MIT-CMU",
+            "MIT-enna",
+            "MIT-feh",
+            "MIT-Festival",
+            "MIT-Khronos-old",
+            "MIT-Modern-Variant",
+            "MIT-open-group",
+            "MIT-testregex",
+            "MIT-Wu"
+          ]
+        },
+        {
+          "param_id": "multiple_license_permissive_approach",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "BannedLicenses",
+      "name": "Banned License APACHE",
+      "param_values": [
+        {
+          "param_id": "list_of_package_licenses",
+          "value": [
+            "Apache-1.0",
+            "Apache-1.1",
+            "Apache-2.0"
+          ]
+        },
+        {
+          "param_id": "multiple_license_permissive_approach",
+          "value": false
+        }
+      ]
+    },
+    {
+      "condition_template_id": "BannedLicenses",
+      "name": "Banned License BSD",
+      "param_values": [
+        {
+          "param_id": "list_of_package_licenses",
+          "value": [
+            "0BSD",
+            "BSD-1-Clause",
+            "BSD-2-Clause",
+            "BSD-2-Clause-Darwin",
+            "BSD-2-Clause-first-lines",
+            "BSD-2-Clause-FreeBSD",
+            "BSD-2-Clause-NetBSD",
+            "BSD-2-Clause-Patent",
+            "BSD-2-Clause-pkgconf-disclaimer",
+            "BSD-2-Clause-Views",
+            "BSD-3-Clause",
+            "BSD-3-Clause-acpica",
+            "BSD-3-Clause-No-Military-License",
+            "BSD-3-Clause-No-Nuclear-License",
+            "BSD-3-Clause-No-Nuclear-License-2014",
+            "BSD-3-Clause-No-Nuclear-Warranty",
+            "BSD-3-Clause-Open-MPI",
+            "BSD-3-Clause-Sun",
+            "BSD-4.3RENO",
+            "BSD-4.3TAHOE",
+            "BSD-4-Clause",
+            "BSD-4-Clause-Shortened",
+            "BSD-4-Clause-UC",
+            "BSD-Advertising-Acknowledgement",
+            "BSD-Attribution-HPND-disclaimer",
+            "BSD-Inferno-Nettverk",
+            "BSD-Protection",
+            "BSD-Source-beginning-file",
+            "BSD-Source-Code",
+            "BSD-Systemics",
+            "BSD-Systemics-W3Works"
+          ]
+        },
+        {
+          "param_id": "multiple_license_permissive_approach",
+          "value": false
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "name": "poc-policy-01",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 1,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-02",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 2,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-03",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 3,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-04",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 4,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-05",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 5,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-06",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 6,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-07",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 7,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-08",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "CVSS of 9 to 10 with or without fix version",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-09",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "CVSS of 9 to 10 with fix version",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-10",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "CVSS of 8 to 9 with or without fix version",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-11",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "CVSS of 8 to 9 with fix version",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-12",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "CVSS of 6 to 7 with or without fix version",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-13",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "CVSS of 6 to 7 with fix version",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-14",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 12,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-15",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 13,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-16",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 14,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-17",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 15,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-18",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 16,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-19",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Package version is immature 3 days",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-20",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Package version is immature 5 days",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-21",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Package version is immature 10 days",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-22",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Package version is immature 21 days",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-23",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Package version is immature 28 days",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-24",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 8,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-25",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 9,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-26",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 10,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-27",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": 11,
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-28",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Banned License MIT",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-29",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Banned License APACHE",
+      "waiver_request_config": "forbidden"
+    },{
+      "name": "poc-policy-30",
+      "enabled": true,
+      "scope": "all_repos",
+      "policy_action": "block",
+      "condition_id": "Banned License BSD",
+      "waiver_request_config": "forbidden"
+    }
+  ]
+}
