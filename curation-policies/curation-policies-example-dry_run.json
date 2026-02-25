@@ -246,210 +246,210 @@
   ],
   "policies": [
     {
-      "name": "poc-policy-w01",
+      "name": "poc-policy-01",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 1,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w02",
+      "name": "poc-policy-02",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 2,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w03",
+      "name": "poc-policy-03",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 3,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w04",
+      "name": "poc-policy-04",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 4,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w05",
+      "name": "poc-policy-05",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 5,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w06",
+      "name": "poc-policy-06",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 6,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w07",
+      "name": "poc-policy-07",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 7,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w08",
+      "name": "poc-policy-08",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "CVSS of 9 to 10 with or without fix version",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w09",
+      "name": "poc-policy-09",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "CVSS of 9 to 10 with fix version",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w10",
+      "name": "poc-policy-10",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "CVSS of 8 to 9 with or without fix version",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w11",
+      "name": "poc-policy-11",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "CVSS of 8 to 9 with fix version",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w12",
+      "name": "poc-policy-12",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "CVSS of 6 to 7 with or without fix version",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w13",
+      "name": "poc-policy-13",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "CVSS of 6 to 7 with fix version",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w14",
+      "name": "poc-policy-14",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 12,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w15",
+      "name": "poc-policy-15",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 13,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w16",
+      "name": "poc-policy-16",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 14,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w17",
+      "name": "poc-policy-17",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 15,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w18",
+      "name": "poc-policy-18",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 16,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w19",
+      "name": "poc-policy-19",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Package version is immature 3 days",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w20",
+      "name": "poc-policy-20",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Package version is immature 5 days",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w21",
+      "name": "poc-policy-21",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Package version is immature 10 days",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w22",
+      "name": "poc-policy-22",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Package version is immature 21 days",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w23",
+      "name": "poc-policy-23",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Package version is immature 28 days",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w24",
+      "name": "poc-policy-24",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 8,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w25",
+      "name": "poc-policy-25",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 9,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w26",
+      "name": "poc-policy-26",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 10,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w27",
+      "name": "poc-policy-27",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": 11,
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w28",
+      "name": "poc-policy-28",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Banned License MIT",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w29",
+      "name": "poc-policy-29",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",
       "condition_id": "Banned License APACHE",
       "waiver_request_config": "forbidden"
     },{
-      "name": "poc-policy-w30",
+      "name": "poc-policy-30",
       "enabled": true,
       "scope": "all_repos",
       "policy_action": "dry_run",

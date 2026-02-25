@@ -19,8 +19,9 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
 
     :param dict login_data: Dictionary containing "token" and "host" values.
     :param str method: One of "GET", "PUT", or "POST".
-    :param str url: URL of the API sans the "host" part.
+    :param str path: URL of the API sans the "host" part.
     :param str data: String containing the data serialized into JSON format.
+    :param bool is_data_json: Boolean indicating whether the data argument is a JSON or something else.
     :return:
     """
     req_url = "{}{}".format(login_data["host"], path)
