@@ -2,7 +2,6 @@ export default async (context: PlatformContext, data: BeforeDownloadRequestReque
 
     let status: ActionStatus = ActionStatus.PROCEED;
     let message: string = "Proceed";
-
     try {
 
         if(data.metadata.name == "manifest.json" || data.metadata.name == "list.manifest.json") {
@@ -11,6 +10,9 @@ export default async (context: PlatformContext, data: BeforeDownloadRequestReque
             // Get the labels from the graphql
             let dpackage: string = data.metadata.repoPath.path.split("/", 2).join("/");
             console.log(`Found Package: ${dpackage}`);
+            let dtag: string = data.metadata.repoPath.path.split("/", 3).join("/");
+            dtag = dtag.substring(dpackage.length);
+            console.log(`Found Tag: ${dtag}`);
             // FIXME: Need to remove the 'library/' if the package starts with that.
 
             let query: string = `{ "query" : "{ publicPackage { getPackage(name: \\"${dpackage}\\" type: \\"docker\\") { name, type, customCatalogLabelsConnection(first:4) { edges { node { name } } } } } }"}`;
@@ -30,18 +32,23 @@ export default async (context: PlatformContext, data: BeforeDownloadRequestReque
                 const res2 = await context.clients.platformHttp.post('/catalog/api/v1/custom/graphql', query2, {'Content-Type': 'application/json'});
                 console.log(`res2.status: ${res2.status}`);
 
-                // Download the manifest file into the seconday repo
-                //let new_repo: string = "20260313-secondary-remote";
-                //let file_path: string = data.metadata.repoPath.path;
-                //const res3 = await context.clients.platformHttp.get(`/artifactory/api/download/${new_repo}/${file_path}?content=none`);
-                //console.log(`res3.status: ${res3.status}`);
-				//
-				// NOTE: Due to docker being docker, the above request doesn't work correctly and would only download the manifest anyway.
-				//       A pipeline or runner should be established somewhere else (e.g. github actions or jenkins) and the download into
-				//       the secondary repository should happen there where a full docker client can be run.
+                // Trigger an action to pull the image
+                let GH_ORG: string = "danielw-jfrog";
+                let GH_REPO: string = "actions-examples";
+                let GH_WORKFLOW: string = "pull_docker_image.yml";
+                let action_path: string = `https://api.github.com/repos/${GH_ORG}/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`;
+                let action_inputs: string = `{ "ref": "main", "inputs": { "docker_image": "${dpackage}", "docker_tag": "${dtag}" } }`;
+
+                const res3 = await context.clients.axios.post(action_path, action_inputs, {
+                             headers: {
+                                 'Accept': 'application/vnd.github+json',
+                                 'Authorization': `Bearer ${context.secrets.get('gh_token')}`,
+                                 'X-GitHub-Api-Version': '2026-03-10'
+                             }
+                });
+                console.log(`res3.status: ${res3.status}`);
             }
         }
-
     } catch(error) {
         // The platformHttp client throws PlatformHttpClientError if the HTTP request status is 400 or higher
         status = ActionStatus.STOP;
