@@ -11,7 +11,7 @@ export default async (context: PlatformContext, data: BeforeDownloadRequestReque
             let dpackage: string = data.metadata.repoPath.path.split("/", 2).join("/");
             console.log(`Found Package: ${dpackage}`);
             let dtag: string = data.metadata.repoPath.path.split("/", 3).join("/");
-            dtag = dtag.substring(dpackage.length);
+            dtag = dtag.substring(dpackage.length + 1);
             console.log(`Found Tag: ${dtag}`);
             // FIXME: Need to remove the 'library/' if the package starts with that.
 
