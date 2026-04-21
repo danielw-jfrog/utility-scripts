@@ -174,26 +174,14 @@ def main():
         if tmp_current_config is None:
             continue
 
-        # FIXME: Certain repos require special formats for the URL
-        #        - NPM requires the artifactory/api/npm/<repo_key> URL
-        #        - PyPi requires the non api format for the URL, but needs the
-        #             Registry URL set to the api/pypi version.
-        # FIXME: Verify other package type URLs
-        # FIXME: Should add a username & password/token option as it's usually
-        #           needed for access to the curation environment.  Environs for
-        #           all repos, but should there be a per repo version in the JSON?
+        # NOTE: Special package URL mangling has been migrated to the
+        #       create-remotes.py script.
 
         # Update the repo
         if tmp_package_type in ["pypi", "Pypi", "PYPI"]:
             tmp_pypi_reg = "https://pypi.org"
-            if ".jfrog.io" in tmp_repo_url:
-                # This is an artifactory smart repo, so make the Registry URL
-                # https://xxx.jfrog.io/artifactory/repo-name
-                tmp_repo_split = tmp_repo_url.split("/")
-                tmp_repo_split.insert(4, "api")
-                tmp_repo_split.insert(5, "pypi")
-                tmp_repo_split.append("")
-                tmp_pypi_reg = "/".join(tmp_repo_split)
+            if "registry_url" in input_data[i]:
+                tmp_pypi_reg = input_data[i]["registry_url"]
             update_remote_repo(config_data, tmp_repo_key, tmp_repo_url, tmp_pypi_reg)
         else:
             update_remote_repo(config_data, tmp_repo_key, tmp_repo_url)

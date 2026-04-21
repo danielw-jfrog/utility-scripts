@@ -11,6 +11,117 @@ import urllib.request
 import urllib.error
 
 ### GLOBALS ###
+URL_CONVERSIONS = {
+    # AI Editor Extensions
+    "aieditorextensions": {
+        "url": "{}/artifactory/api/aieditorextensions/{}"
+    },
+    # Ansible
+    "ansible": {
+        "url": "{}/artifactory/api/ansible/{}",
+    },
+    # Bower
+    "bower": {
+        "url": "{}/artifactory/api/bower/{}",
+    },
+    # Rust Cargo
+    # Note: The prefix is not required when working in Git mode.
+    "cargo": {
+        "url": "{}/artifactory/api/cargo/{}",
+    },
+    # Chef
+    "chef": {
+        "url": "{}/artifactory/api/chef/{}",
+    },
+    # CocoaPods
+    "pods": {
+        "url": "{}/artifactory/api/pods/{}",
+    },
+    # Composer
+    "composer": {
+        "url": "{}/artifactory/api/composer/{}",
+    },
+    # Conan
+    "conan": {
+        "url": "{}/artifactory/api/conan/{}",
+    },
+    # Anaconda Conda
+    "conda": {
+        "url": "{}/artifactory/api/conda/{}",
+    },
+    # Docker
+    "docker": {
+        "url": "{}/artifactory/api/docker/{}",
+    },
+    # Ruby Gems
+    "gems": {
+        "url": "{}/artifactory/api/gems/{}",
+    },
+    # GitLFS
+    "lfs": {
+        "url": "{}/artifactory/api/lfs/{}",
+    },
+    # GoLang
+    # For more information, see Configure a Go Smart Remote Repository.
+    "go": {
+        "url": "{}/artifactory/api/go/{}",
+    },
+    # Helm
+    "helm": {
+        "url": "{}/artifactory/api/helm/{}",
+    },
+    # HuggingFace
+    "huggingfaceml": {
+        "url": "{}/artifactory/api/huggingfaceml/{}",
+    },
+    # Machine Learning
+    "machinelearning": {
+        "url": "{}/artifactory/api/machinelearning/{}",
+    },
+    # NIM Model
+    "nimmodel": {
+        "url": "{}/artifactory/api/nimmodel/{}",
+    },
+    # NodeJS NPM
+    "npm": {
+        "url": "{}/artifactory/api/npm/{}",
+    },
+    # NuGet
+    # For more information, see Configure a NuGet Smart Remote Repository.
+    "nuget": {
+        "url": "{}/artifactory/api/nuget/{}",
+    },
+    # OCI
+    "oci": {
+        "url": "{}/artifactory/api/oci/{}",
+    },
+    # Pub
+    "pub": {
+        "url": "{}/artifactory/api/pub/{}",
+    },
+    # Puppet
+    "puppet": {
+        "url": "{}/artifactory/api/puppet/{}",
+    },
+    # Python PyPi
+    # For more information: https://docs.jfrog.com/artifactory/docs/smart-remote-repositories#create-a-pypi-smart-remote-repository
+    "pypi": {
+        "url": "{}/artifactory/{}",
+        "registry_url": "{}/artifactory/api/pypi/{}"
+    },
+    # Swift
+    "swift": {
+        "url": "{}/artifactory/api/swift/{}",
+    },
+    # Terraform
+    "terraform": {
+        "url": "{}/artifactory/api/terraform/{}",
+    },
+    # VCS
+    "vcs": {
+        "url": "{}/artifactory/api/vcs/{}",
+    }
+}
 
 ### FUNCTIONS ###
 def make_api_request(login_data, method, path, data = None, is_data_json = True):
@@ -84,6 +195,30 @@ def create_remote_repo(login_data, repo_key, package_type, repo_url):
     resp_str = make_api_request(login_data, "PUT", req_url, req_data)
     logging.debug("  response: %s", resp_str)
 
+def convert_url(arti_host, repo_key, package_type):
+    """
+    :param str arti_host: Hostname for the artifactory instance containing the remote repo.
+    :param str repo_key: Repository key of the remote repository.
+    :param str package_type: Repository Type of the remote repository.
+    :return dict: Data with updated URL values.
+    """
+    modified_data = {
+        "key": str(repo_key),
+        "type": "REMOTE",
+        "url": "{}/artifactory/{}",
+        "packageType": str(package_type)
+    }
+
+    tmp_package_type = package_type.lower()
+    if tmp_package_type in URL_CONVERSIONS:
+        modified_data["url"] = URL_CONVERSIONS[tmp_package_type]["url"]
+        if "registry_url" in URL_CONVERSIONS[tmp_package_type]:
+            # For now, just PyPi: Needs a second URL called the registry URL
+            modified_data["registry_url"] = URL_CONVERSIONS[tmp_package_type]["registry_url"].format(str(arti_host), str(repo_key))
+
+    modified_data["url"] = modified_data["url"].format(str(arti_host), str(repo_key))
+    return modified_data
+
 ### CLASSES ###
 
 ### MAIN ###
@@ -154,17 +289,15 @@ def main():
         tmp_repo_key = "{}{}".format(repo_prefix, input_data[i]["key"])
         tmp_package_type = input_data[i]["packageType"]
         tmp_repo_url = input_data[i]["url"]
-        # FIXME: Do we need to collect the results and do something else?
+        # FIXME: Do we need to collect the results of the creation attempt and
+        #        do something else if there's an error?
         create_remote_repo(config_data, tmp_repo_key, tmp_package_type, tmp_repo_url)
         # Add an updated version of this entry to the modified data
-        modified_data.append({
-            "key": tmp_repo_key,
-            "type": "REMOTE",
-            "url": "{}/artifactory/{}".format(config_data["arti_host"], tmp_repo_key),
-            "packageType": tmp_package_type
-        })
+        modified_data.append(convert_url(config_data["arti_host"], tmp_repo_key, tmp_package_type))
 
     # Output the modified data as a JSON file
+    # FIXME: The outputed URLs need to be modified to use the new 'api' forms
+    #        for all of the repository types.
     if len(modified_data) > 0:
         logging.info("Entries Modified, outputing new JSON")
         with open(output_json_path, 'w') as oj:
