@@ -2,6 +2,7 @@
 
 ### IMPORTS ###
 import argparse
+import json
 import logging
 import os
 import urllib.request
@@ -21,7 +22,6 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
     :param str data: String containing the data serialized into JSON format.
     :return:
     """
-    # FIXME: Add query parameters to the function arguments
     req_url = "{}{}".format(login_data["host"], path)
     req_headers = {}
     if is_data_json:
@@ -35,12 +35,6 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
     logging.debug("req_data: %s", req_data)
 
     req_headers["Authorization"] = "Bearer {}".format(login_data["token"])
-
-    #req_pwmanager = urllib.request.HTTPPasswordMgrWithPriorAuth()
-    #req_pwmanager.add_password(None, login_data["host"], login_data["user"], login_data["apikey"], is_authenticated = True)
-    #req_handler = urllib.request.HTTPBasicAuthHandler(req_pwmanager)
-    #req_opener = urllib.request.build_opener(req_handler)
-    #urllib.request.install_opener(req_opener)
 
     request = urllib.request.Request(req_url, data = req_data, headers = req_headers, method = method)
     resp = None
@@ -56,50 +50,67 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
         logging.debug("  response body: %s", ex.read().decode("utf-8"))
     except urllib.error.URLError as ex:
         logging.error("Request Failed (URLError): %s", ex.reason)
-    # FIXME: Should make the status code available to the calling method.
     return resp
+
+def get_artifacts_by_checksum(login_data, checksum_sha256, repo_list = []):
+    """
+    Make a request to the search by checksum API.
+
+    :param dict login_data: Dictionary containing "token" and "host" values.
+    :param str checksum_sha256: String containing the sha256 to use in the search.
+    :param list repo_list: List of strings of repositories to search.
+    :return list: List of user dictionaries.
+    """
+    req_url = "/artifactory/api/search/checksum?sha256={}".format(checksum_sha256)
+    if len(repo_list) > 0:
+        req_url = "{}&repos={}".format(req_url, ",".join(repo_list))
+    logging.debug("Getting artifacts by checksum")
+    resp_str = make_api_request(login_data, "GET", req_url)
+    logging.debug("Result of search checksum request: %s", resp_str)
+    resp_list = json.loads(resp_str)
+    return resp_list
 
 ### CLASSES ###
 
 ### MAIN ###
 def main():
-    parser_description = "description goes here."
+    parser_description = """
+    Get a list of artifacts that match the provided SHA256 value.
+    """
 
     parser = argparse.ArgumentParser(description = parser_description, formatter_class = argparse.RawTextHelpFormatter)
     parser.add_argument("-v", "--verbose", action = "store_true")
-
-    parser.add_argument("--dry-run", action = "store_true",
-                        help = "Bypass the changing API calls for verification purposes.")
-
-    # FIXME: Add other arguments here
-
-    parser.add_argument("--artifactory-token", default = os.getenv("ARTIFACTORY_TOKEN", ""),
+    parser.add_argument("--token", default = os.getenv("ARTIFACTORY_TOKEN", ""),
                         help = "Artifactory auth token to use for requests.  Will use ARTIFACTORY_TOKEN if not specified.")
-    parser.add_argument("--artifactory-host", default = os.getenv("ARTIFACTORY_HOST", ""),
+    parser.add_argument("--host", default = os.getenv("ARTIFACTORY_HOST", ""),
                         help = "Artifactory host URL (e.g. https://artifactory.example.com/) to use for requests.  Will use ARTIFACTORY_HOST if not specified.")
+
+    parser.add_argument("--repo_list", help = "Comma separated list of repository keys that should be searched.")
+    parser.add_argument("sha256", help = "SHA256 string that should be used to search for artifacts.")
 
     args = parser.parse_args()
 
     # Set up logging
     logging.basicConfig(
-        format = "%(asctime)s:%(levelname)s:%(thread)d-%(threadName)s:%(name)s:%(funcName)s: %(message)s",
+        format = "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s: %(message)s",
         level = logging.DEBUG if args.verbose else logging.INFO
     )
     logging.debug("Args: %s", args)
 
-    # Set up the config data
-    logging.debug("Preparing the environment.")
-    config_data = {}
-    config_data["dry_run"] = True if args.dry_run else False
-    config_data["arti_token"] = str(args.artifactory_token)
-    config_data["arti_host"] = str(args.artifactory_host)
-    logging.debug("Config Data: %s", config_data)
+    logging.info("Preparing Environment")
 
-    # FIXME: Perform the basic work here.  This should really call a couple of
-    #        methods or classes and the work should be in those methods or
-    #        classes.
-    pass
+    tmp_login_data = {}
+    tmp_login_data["token"] = args.token
+    tmp_login_data["host"] = args.host
+
+    # Get the list of artifacts for the SHA256
+    tmp_repo_list = []
+    if args.repo_list:
+        tmp_repo_list = args.repo_list.split(",")
+    tmp_result = get_artifacts_by_checksum(tmp_login_data, args.sha256, tmp_repo_list)
+
+    logging.info("Result: %s", tmp_result)
+
 
 if __name__ == "__main__":
     main()
-
