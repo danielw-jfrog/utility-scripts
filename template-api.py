@@ -11,7 +11,7 @@ import urllib.parse
 ### GLOBALS ###
 
 ### FUNCTIONS ###
-def make_api_request(login_data, method, path, data = None, is_data_json = True):
+def make_api_request(login_data, method, path, data = None, is_data_json = True, headers = {}):
     """
     Send the request to the JFrog Artifactory API.
 
@@ -19,11 +19,13 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
     :param str method: One of "GET", "PUT", or "POST".
     :param str url: URL of the API sans the "host" part.
     :param str data: String containing the data serialized into JSON format.
+    :param bool is_data_json: True if the data should be interpretted as application/json, false if text/plain.
+    :param dict headers: Dictionary of headers with key as header name and value as header value.
     :return:
     """
     # FIXME: Add query parameters to the function arguments
     req_url = "{}{}".format(login_data["host"], path)
-    req_headers = {}
+    req_headers = headers
     if is_data_json:
         req_headers["Content-Type"] = "application/json"
     else:

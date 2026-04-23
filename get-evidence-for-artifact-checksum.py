@@ -54,23 +54,18 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True,
         logging.error("Request Failed (URLError): %s", ex.reason)
     return resp
 
-def get_artifacts_by_checksum(login_data, checksum_sha256, repo_list = []):
+def get_evidence_for_artifact_checksum(login_data, checksum_sha256, repo_key):
     """
-    Make a request to the artifact search by checksum API.
+    Make a request to the evidence search by checksum API.
 
     :param dict login_data: Dictionary containing "token" and "host" values.
     :param str checksum_sha256: String containing the sha256 to use in the search.
     :param list repo_list: List of strings of repositories to search.
     :return list: List of user dictionaries.
     """
-    req_url = "/artifactory/api/search/checksum?sha256={}".format(checksum_sha256)
-    if len(repo_list) > 0:
-        req_url = "{}&repos={}".format(req_url, ",".join(repo_list))
-    req_headers = {
-        "X-Result-Detail":"info, properties"
-    }
-    logging.debug("Getting artifacts by checksum")
-    resp_str = make_api_request(login_data, "GET", req_url, headers = req_headers)
+    req_url = "/evidence/api/v1/evidence-search?sha256={}&repository_key={}".format(checksum_sha256, repo_key)
+    logging.debug("Getting evidences by artifacts checksum")
+    resp_str = make_api_request(login_data, "GET", req_url)
     logging.debug("Result of search checksum request: %s", resp_str)
     resp_list = json.loads(resp_str)
     return resp_list
@@ -90,7 +85,7 @@ def main():
     parser.add_argument("--host", default = os.getenv("ARTIFACTORY_HOST", ""),
                         help = "Artifactory host URL (e.g. https://artifactory.example.com/) to use for requests.  Will use ARTIFACTORY_HOST if not specified.")
 
-    parser.add_argument("--repo_list", help = "Comma separated list of repository keys that should be searched.")
+    parser.add_argument("repo_key", help = "Repository key that should be searched.")
     parser.add_argument("sha256", help = "SHA256 string that should be used to search for artifacts.")
 
     args = parser.parse_args()
@@ -108,11 +103,9 @@ def main():
     tmp_login_data["token"] = args.token
     tmp_login_data["host"] = args.host
 
-    # Get the list of artifacts for the SHA256
+    #  Get the list of evidences for the artifacts with the SHA256
     tmp_repo_list = []
-    if args.repo_list:
-        tmp_repo_list = args.repo_list.split(",")
-    tmp_result = get_artifacts_by_checksum(tmp_login_data, args.sha256, tmp_repo_list)
+    tmp_result = get_evidence_for_artifact_checksum(tmp_login_data, args.sha256, args.repo_key)
 
     logging.info("Result: %s", tmp_result)
 
