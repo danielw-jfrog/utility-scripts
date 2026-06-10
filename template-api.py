@@ -2,6 +2,7 @@
 
 ### IMPORTS ###
 import argparse
+import json
 import logging
 import os
 import urllib.request
@@ -93,8 +94,8 @@ def main():
     logging.debug("Preparing the environment.")
     config_data = {}
     config_data["dry_run"] = True if args.dry_run else False
-    config_data["arti_token"] = str(args.artifactory_token)
-    config_data["arti_host"] = str(args.artifactory_host)
+    config_data["token"] = str(args.artifactory_token)
+    config_data["host"] = str(args.artifactory_host)
     logging.debug("Config Data: %s", config_data)
 
     # FIXME: Perform the basic work here.  This should really call a couple of
