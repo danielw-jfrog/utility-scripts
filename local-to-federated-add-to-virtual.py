@@ -160,6 +160,8 @@ def main():
     parser.add_argument("-v", "--verbose", action = "store_true")
     parser.add_argument("--dry-run", action = "store_true",
                         help = "Bypass the Delete API call for verification purposes.")
+    parser.add_argument("--rename", action = "store_true",
+                        help = "Rename the local repositories ending with -local to end with -fed.")
     parser.add_argument("--token", default = os.getenv("ARTIFACTORY_TOKEN", ""),
                         help = "Artifactory auth token to use for requests.  Will use ARTIFACTORY_TOKEN if not specified.")
     parser.add_argument("--user", default = os.getenv("ARTIFACTORY_USER", ""),
@@ -205,11 +207,12 @@ def main():
         }
 
         # If federated_key ends in "-local", then remove.  Append "-fed"
-        local_repos[repo["key"]]["federated_key"] = local_repos[repo["key"]]["federated_key"].removesuffix("-local")
-        local_repos[repo["key"]]["federated_key"] = local_repos[repo["key"]]["federated_key"].__add__("-fed")
-        # Update the key in the federated config
-        local_repos[repo["key"]]["federated_config"]["key"] = local_repos[repo["key"]]["federated_key"]
-        logging.debug("  New Federated Key: %s", local_repos[repo["key"]]["federated_key"])
+        if args.rename:
+            local_repos[repo["key"]]["federated_key"] = local_repos[repo["key"]]["federated_key"].removesuffix("-local")
+            local_repos[repo["key"]]["federated_key"] = local_repos[repo["key"]]["federated_key"].__add__("-fed")
+            # Update the key in the federated config
+            local_repos[repo["key"]]["federated_config"]["key"] = local_repos[repo["key"]]["federated_key"]
+            logging.debug("  New Federated Key: %s", local_repos[repo["key"]]["federated_key"])
 
     # Check each Virtual to find the associated locals
     for vrepo in all_repos["VIRTUAL"]:
