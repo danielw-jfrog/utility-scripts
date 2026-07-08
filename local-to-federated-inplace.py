@@ -87,7 +87,7 @@ def get_repository_configurations(login_data):
     resp_dict = json.loads(resp_str)
     return resp_dict
 
-def create_federated_repository(login_data, federated_repo_config):
+def convert_to_federated_repository(login_data, local_repo_key):
     """
     Send the request to create the federated repo to the JFrog Artifactory API.
 
@@ -95,57 +95,11 @@ def create_federated_repository(login_data, federated_repo_config):
     :param dict federated_repo_config: Dictionary containing configuration of the federated repository to create.
                                        https://jfrog.com/help/r/jfrog-rest-apis/repository-configuration-json
     """
-    req_url = "/artifactory/api/repositories/{}".format(federated_repo_config["key"])
-    req_data = json.dumps(federated_repo_config)
-    logging.info("Creating federated repository: %s", federated_repo_config["key"])
+    req_url = "/artifactory/api/federation/migrate/{}".format(local_repo_key)
+    logging.info("Converting local to federated repository - key: %s", local_repo_key)
     if login_data["dry_run"] == False:
-        result = make_api_request(login_data, 'PUT', req_url, req_data)
+        result = make_api_request(login_data, 'POST', req_url)
         # FIXME: Handle the failure to create the repo
-
-def update_virtual_repository(login_data, virtual_repo_config):
-    """
-    Send the request to update the virtual repo to the JFrog Artifactory API.
-
-    :param dict login_data: Dictionary containing login and host values.
-    :param dict virtual_repo_config: Dictionary containing configuration of the virtual repository to update.
-                                     https://jfrog.com/help/r/jfrog-rest-apis/repository-configuration-json
-    """
-    req_url = "/artifactory/api/repositories/{}".format(virtual_repo_config["key"])
-    req_data = json.dumps(virtual_repo_config)
-    logging.info("Creating federated repository: %s", virtual_repo_config["key"])
-    if login_data["dry_run"] == False:
-        result = make_api_request(login_data, 'POST', req_url, req_data)
-        # FIXME: Handle the failure to create the repo
-
-def add_federated_repo_to_virtual_repo(virtual_repo_config, federated_repo_key):
-    """
-    Output an updated virtual_repo_config with the federated repository key prepended to the repositories list.
-
-    :param dict virtual_repo_config: The repository configuration of the virtual repository that is to be updated.
-    :param str federated_repo_key: The repository key of the federated repository that is to be inserted.
-    :return dict updated_virtual_repo_config: The updated virtual repository config
-    """
-    updated_virt_repo = copy.deepcopy(virtual_repo_config)
-    updated_virt_repo["repositories"].insert(0, federated_repo_key)
-    updated_virt_repo["defaultDeploymentRepo"] = federated_repo_key
-    return updated_virt_repo
-
-def convert_local_repo_config_to_federated(local_repo_config):
-    """
-    Walk through the repository configuration dictionary and make sure that it only includes the keys for a federated
-    repository.  Also, convert any keys that need converting, such as changing the "rclass" to "federated".
-
-    :param dict local_repo_config: The repository configuration of the source local repository, the repository
-                                   configuration that is being converted to a federated repository.
-    :return dict federated_repo_config: Returns a dictionary containing the repository configuration converted to a
-                                        federated repository.
-    """
-    federated_repo_config = {}
-    for k in FED_REPO_KEYS:
-        if k in local_repo_config:
-            federated_repo_config[k] = local_repo_config[k]
-    federated_repo_config["rclass"] = "federated"
-    return federated_repo_config
 
 ### CLASSES ###
 
@@ -194,51 +148,14 @@ def main():
     all_repos = get_repository_configurations(login_data)
 
     # Make a list of all of the locals with their configurations and prepared federated configurations
-    local_repos = {}
+    # local_repos = {}
+    local_repo_keys = []
     for repo in all_repos["LOCAL"]:
-        logging.debug("Preparing Repo Key: %s", repo["key"])
-        local_repos[repo["key"]] = {
-            "local_config": repo,
-            "virtuals": [],
-            "federated_key": repo["key"],
-            "federated_config": convert_local_repo_config_to_federated(repo)
-        }
+        local_repo_keys.append(repo["key"])
 
-        # If federated_key ends in "-local", then remove.  Append "-fed"
-        local_repos[repo["key"]]["federated_key"] = local_repos[repo["key"]]["federated_key"].removesuffix("-local")
-        local_repos[repo["key"]]["federated_key"] = local_repos[repo["key"]]["federated_key"].__add__("-fed")
-        # Update the key in the federated config
-        local_repos[repo["key"]]["federated_config"]["key"] = local_repos[repo["key"]]["federated_key"]
-        logging.debug("  New Federated Key: %s", local_repos[repo["key"]]["federated_key"])
-
-    # Check each Virtual to find the associated locals
-    for vrepo in all_repos["VIRTUAL"]:
-        logging.debug("Preparing Virtual Repo Key: %s", vrepo["key"])
-        logging.debug("  contained repository list: %s", vrepo["repositories"])
-        for arepo in vrepo["repositories"]:
-            if arepo in local_repos:
-                logging.debug("  Found associated Local Repo Key: %s", arepo)
-                local_repos[arepo]["virtuals"].append(add_federated_repo_to_virtual_repo(vrepo, local_repos[arepo]["federated_key"]))
-
-    # For each local, create the associated federated if it doesn't already exist
-    fed_repo_keys = []
-    for frepo in all_repos["FEDERATED"]:
-        fed_repo_keys.append(frepo["key"])
-
-    for repo_key in local_repos:
-        if local_repos[repo_key]["federated_key"] not in fed_repo_keys:
-            # Federated repo doesn't exist, so create it
-            logging.debug("Creating Federated Repo Key: %s", local_repos[repo_key]["federated_key"])
-            create_federated_repository(login_data, local_repos[repo_key]["federated_config"])
-        else:
-            logging.debug("Federated Repo already exists: %s", local_repos[repo_key]["federated_key"])
-
-    # For each local, update the associated virtual with the new federated repo
-    for lrepo_key in local_repos:
-        for vrepo in local_repos[lrepo_key]["virtuals"]:
-            logging.debug("Updating Repo Key: %s", vrepo["key"])
-            update_virtual_repository(login_data, vrepo)
-
+    for local_repo_key in local_repo_keys:
+        logging.debug("Converting Local to Federated Repo - Key: %s", local_repo_key)
+        convert_to_federated_repository(login_data, local_repo_key)
 
 if __name__ == "__main__":
     main()
