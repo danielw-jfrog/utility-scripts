@@ -5,7 +5,6 @@ import argparse
 import json
 import logging
 import os
-import sys
 import urllib.request
 import urllib.error
 
@@ -84,8 +83,9 @@ def convert_federated_to_local(login_data, repo_key_list):
     req_url = "/artifactory/api//federation/convertToLocal"
     req_data = json.dumps(repo_key_list)
     logging.info("Converting federated repositories to local: %s", req_data)
-    result = make_api_request(login_data, 'POST', req_url, req_data)
-    # FIXME: Handle the failure to create the repo
+    if login_data["dry_run"] == False:
+        result = make_api_request(login_data, 'POST', req_url, req_data)
+        # FIXME: Handle the failure to create the repo
 
 ### CLASSES ###
 
