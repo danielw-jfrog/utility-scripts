@@ -5,24 +5,29 @@ import argparse
 import json
 import logging
 import os
+import sys
 import urllib.request
 import urllib.error
 
 ### GLOBALS ###
-FED_REPO_KEYS = ["key", "projectKey", "environments", "rclass", "packageType", "members", "description", "proxy",
-                 "disableProxy", "notes", "includePattern", "excludePattern", "repoLayoutRef", "debianTrivialLayout",
-                 "checksumPolicyType", "handleReleases", "handleSnapshots", "maxUniqueSnapshots", "maxUniqueTags",
-                 "snapshotVersionBehavior", "suppressPomConsistencyChecks", "blackedOut", "xrayIndex", "propertySets",
-                 "archiveBrowsingEnabled", "calculateYumMetadata", "yumRootDepth", "dockerApiVersion",
-                 "enableFileListsIndexing", "optionalIndexCompressionFormats", "downloadRedirect", "cdnRedirect",
-                 "blockPushingSchema1", "primaryKeyPairRef", "secondaryKeyPairRef", "priorityResolution"]
+REPO_TYPES = ["alpine", "cargo", "composer", "bower", "chef", "cocoapods", "conan", "cran", "debian", "docker", "helm",
+              "gems", "gitlfs", "go", "gradle", "ivy", "maven", "npm", "nuget", "opkg", "pub", "puppet", "pypi", "rpm",
+              "sbt", "swift", "terraform", "vagrant", "yum", "generic"]
+
+LOCAL_REPO_KEYS = ["key", "projectKey", "environments", "rclass", "packageType", "description", "notes",
+                   "includesPattern", "excludesPattern", "repoLayoutRef", "debianTrivialLayout", "checksumPolicyType",
+                   "handleReleases", "handleSnapshots", "maxUniqueSnapshots", "maxUniqueTags",
+                   "snapshotVersionBehavior", "suppressPomConsistencyChecks", "blackedOut", "xrayIndex", "propertySets",
+                   "archiveBrowsingEnabled", "calculateYumMetadata", "yumRootDepth", "dockerApiVersion",
+                   "enableFileListsIndexing", "optionalIndexCompressionFormats", "downloadRedirect", "cdnRedirect",
+                   "blockPushingSchema1", "primaryKeyPairRef", "secondaryKeyPairRef", "priorityResolution"]
 
 ### FUNCTIONS ###
 def make_api_request(login_data, method, path, data = None, is_data_json = True):
     """
     Send the request to the JFrog Artifactory API.
 
-    :param dict login_data: Dictionary containing "host" and ("user", "apikey") or "token" values.
+    :param dict login_data: Dictionary containing "user", "apikey", and "host" values.
     :param str method: One of "GET", "PUT", or "POST".
     :param str path: URL path of the API sans the "host" part.
     :param str data: String containing the data serialized into JSON format.
@@ -41,19 +46,16 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
     logging.debug("req_headers: %s", req_headers)
     logging.debug("req_data: %s", req_data)
 
-    if("token" in login_data):
-        req_headers["Authorization"] = "Bearer {}".format(login_data["token"])
-    elif("apikey" in login_data):
-        req_pwmanager = urllib.request.HTTPPasswordMgrWithPriorAuth()
-        req_pwmanager.add_password(
-            None,
-            login_data["host"],
-            login_data["user"],
-            login_data["apikey"],
-            is_authenticated = True)
-        req_handler = urllib.request.HTTPBasicAuthHandler(req_pwmanager)
-        req_opener = urllib.request.build_opener(req_handler)
-        urllib.request.install_opener(req_opener)
+    req_pwmanager = urllib.request.HTTPPasswordMgrWithPriorAuth()
+    req_pwmanager.add_password(
+        None,
+        login_data["host"],
+        login_data["user"],
+        login_data["apikey"],
+        is_authenticated = True)
+    req_handler = urllib.request.HTTPBasicAuthHandler(req_pwmanager)
+    req_opener = urllib.request.build_opener(req_handler)
+    urllib.request.install_opener(req_opener)
 
     request = urllib.request.Request(req_url, data = req_data, headers = req_headers, method = method)
     resp = None
@@ -71,42 +73,31 @@ def make_api_request(login_data, method, path, data = None, is_data_json = True)
         logging.error("Request Failed (URLError): %s", ex.reason)
     return resp
 
-def get_repository_configurations(login_data):
+def convert_federated_to_local(login_data, repo_key_list):
     """
-    Get the configuration list for all the repositories from the JFrog Artifactory API.
+    Send the request to convert the list of federated repo keys to local repos to the JFrog Artifactory API.
 
     :param dict login_data: Dictionary containing login and host values.
-    :return dict configuration_list: Returns a dict of lists of dicts containing the configurations of all of the
-                                     repositories grouped by repository type (e.g. local, remote, etc).
+    :param list repo_key_list: List of federated repository keys that will be converted.
+                               https://docs.jfrog.com/artifactory/reference/convertfederatedrepositorytolocal
     """
-    req_url = "/artifactory/api/repositories/configurations"
-    logging.info("Getting repository configurations")
-    resp_str = make_api_request(login_data, "GET", req_url)
-    logging.debug("Result of get_repository_configurations request: %s", resp_str)
-    resp_dict = json.loads(resp_str)
-    return resp_dict
-
-def convert_to_federated_repository(login_data, local_repo_key):
-    """
-    Send the request to convert a local repo to a federated repo to the JFrog Artifactory API.
-
-    :param dict login_data: Dictionary containing login and host values.
-    :param dict federated_repo_config: Dictionary containing configuration of the federated repository to create.
-                                       https://jfrog.com/help/r/jfrog-rest-apis/repository-configuration-json
-    """
-    req_url = "/artifactory/api/federation/migrate/{}".format(local_repo_key)
-    logging.info("Converting local to federated repository - key: %s", local_repo_key)
-    if login_data["dry_run"] == False:
-        result = make_api_request(login_data, 'POST', req_url)
-        # FIXME: Handle the failure to create the repo
+    req_url = "/artifactory/api//federation/convertToLocal"
+    req_data = json.dumps(repo_key_list)
+    logging.info("Converting federated repositories to local: %s", req_data)
+    result = make_api_request(login_data, 'POST', req_url, req_data)
+    # FIXME: Handle the failure to create the repo
 
 ### CLASSES ###
 
 ### MAIN ###
 def main():
     parser_description = """
-    Makes a Federated Repository for each Local Repository, then add the new
-    repository to the corresponding Virtual Repository.
+    Converts a federated repository to a local repository.  If the federated and
+    local repository names are different, create the local repository and copy
+    the artifacts to the local repository.  If the repository names are to be
+    the same, also delete the federated repository, create another local
+    repository with the same name as the federated repository, and copy the
+    artifacts to this local repository.
     """
 
     parser = argparse.ArgumentParser(description = parser_description, formatter_class = argparse.RawTextHelpFormatter)
@@ -122,6 +113,8 @@ def main():
     parser.add_argument("--host", default = os.getenv("ARTIFACTORY_HOST", ""),
                         help = "Artifactory host URL (e.g. https://artifactory.example.com/) to use for requests.  Will use ARTIFACTORY_HOST if not specified.")
 
+    parser.add_argument("repos", required = True, help = "List of federated repositories that should be converted back to local repositories.")
+
     args = parser.parse_args()
 
     # Set up logging
@@ -136,25 +129,17 @@ def main():
     login_data = {
         "host": args.host
     }
-    if(args.token):
+    if (args.token):
         login_data["token"] = args.token
-    if((args.user) and (args.apikey)):
+    if ((args.user) and (args.apikey)):
         login_data["user"] = args.user
         login_data["apikey"] = args.apikey
     login_data["dry_run"] = True if args.dry_run else False
 
-    # Get all of the repository configurations
-    all_repos = get_repository_configurations(login_data)
+    input_repo_str = str(args.repos)
+    input_repo_keys = input_repo_str.split(',')
 
-    # Make a list of all of the locals with their configurations and prepared federated configurations
-    # local_repos = {}
-    local_repo_keys = []
-    for repo in all_repos["LOCAL"]:
-        local_repo_keys.append(repo["key"])
-
-    for local_repo_key in local_repo_keys:
-        logging.debug("Converting Local to Federated Repo - Key: %s", local_repo_key)
-        convert_to_federated_repository(login_data, local_repo_key)
+    convert_federated_to_local(login_data, input_repo_keys)
 
 if __name__ == "__main__":
     main()
