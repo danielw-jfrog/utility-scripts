@@ -175,15 +175,15 @@ def get_evidences_for_finding_for_exposure_for_artifact(login_data, repository_n
     # FIXME: Support the other types of exposures, probably use an enum
     exposure_type = "secrets"
     artifact_path_urlencoded = urllib.parse.quote(artifact_path) # dirone/dirtwo/artone.file -> dirone%2Fdirtwo%2Fartone.file
-    req_url = "https://jf.example.com/xray/api/v1/{}/results/details/findings/evidences?repo={}&path={}&id={}&finding_idx={}&first_evidence_idx=0&evidence_count={}".format(
+    req_url = "/xray/api/v1/{}/results/details/findings/evidences?repo={}&path={}&id={}&finding_idx={}&first_evidence_idx=0&evidence_count={}".format(
         exposure_type, repository_name, artifact_path_urlencoded, result_id, finding_id, evidence_count)
-    logging.debug("Getting list of evidences for finding for exposure for artifact: %s - %s - %s - ", repository_name, artifact_path_urlencoded, result_id, finding_id)
+    logging.debug("Getting list of evidences for finding for exposure for artifact: %s - %s - %s - %s", repository_name, artifact_path_urlencoded, result_id, finding_id)
     resp_str = make_api_request(login_data, "GET", req_url)
     logging.debug("Result of get_evidences_for_finding_for_exposure_for_artifact: %s", resp_str)
     resp_list = json.loads(resp_str)
     return resp_list
 
-def get_rows_for_evidence_for_finding_for_exposure_for_artifact(login_data, repository_name, artifact_path, result_id, finding_id, evidence_id, row_count):
+def get_rows_for_evidence_for_finding_for_exposure_for_artifact(login_data, repository_name, artifact_path, result_id, finding_id, evidence_id, evidence_count, row_count):
     """
     Make a request to the exposures API to get a list of all the exposures for the artifact.
     https://docs.jfrog.com/security/reference/get-exposure-result-list
@@ -200,8 +200,8 @@ def get_rows_for_evidence_for_finding_for_exposure_for_artifact(login_data, repo
     # FIXME: Support the other types of exposures, probably use an enum
     exposure_type = "secrets"
     artifact_path_urlencoded = urllib.parse.quote(artifact_path) # dirone/dirtwo/artone.file -> dirone%2Fdirtwo%2Fartone.file
-    req_url = "https://jf.example.com/xray/api/v1/{}/results/details/findings/evidences?repo={}&path={}&id={}&finding_idx={}&evidence_idx={}&first_row_idx=0&rows_count={}".format(
-        exposure_type, repository_name, artifact_path_urlencoded, result_id, finding_id, evidence_id, row_count)
+    req_url = "/xray/api/v1/{}/results/details/findings/evidences?repo={}&path={}&id={}&finding_idx={}&evidence_idx={}&first_evidence_idx=0&evidence_count={}&first_row_idx=0&rows_count={}".format(
+        exposure_type, repository_name, artifact_path_urlencoded, result_id, finding_id, evidence_id, evidence_count, row_count)
     logging.debug("Getting list of rows for evidence for finding for exposure for artifact: %s - %s - %s - %s - %s", repository_name, artifact_path_urlencoded, result_id, finding_id, evidence_id)
     resp_str = make_api_request(login_data, "GET", req_url)
     logging.debug("Result of get_rows_for_evidence_for_finding_for_exposure_for_artifact: %s", resp_str)
@@ -252,11 +252,11 @@ class ExposuresCSVWriter(Writer):
 
     def open(self, filename):
         super().open(filename)
-        super().write("repository,path,exposure_id,cwe_id,cwe_name,description,severity,finding_id,finding_text,finding_meaning,evidence_id,evidence_text,evidence_row_number,evidence_row_path,evidence_row_evidence,evidence_row_line_number\n")
+        super().write("repository,path,exposure_id,cwe_id,cwe_name,description,severity,finding_id,finding_text,finding_meaning,evidence_id,evidence_text,evidence_row\n")
 
     def write(self, line_data_dict):
         # format line data to string
-        line = "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
+        line = "{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
             line_data_dict["repository"],
             line_data_dict["path"],
             line_data_dict["exposure_id"],
@@ -269,10 +269,7 @@ class ExposuresCSVWriter(Writer):
             line_data_dict["finding_meaning"],
             line_data_dict["evidence_id"],
             line_data_dict["evidence_text"],
-            line_data_dict["evidence_row_number"],
-            line_data_dict["evidence_row_path"],
-            line_data_dict["evidence_row_evidence"],
-            line_data_dict["evidence_row_line_number"]
+            line_data_dict["evidence_row"]
         )
         super().write( str(line) )
 
@@ -398,10 +395,7 @@ def main():
             "finding_meaning": "",
             "evidence_id": "",
             "evidence_text": "",
-            "evidence_row_number": "",
-            "evidence_row_path": "",
-            "evidence_row_evidence": "",
-            "evidence_row_line_number": ""
+            "evidence_row": ""
         }
 
         # Get the list of exposures
@@ -488,14 +482,26 @@ def main():
                             result_dict['evidence_id'] = evidence_entry["evidence_idx"]
                             result_dict['evidence_text'] = evidence_entry["evidence_text"]
 
-                            rows_list = get_rows_for_evidence_for_finding_for_exposure_for_artifact(config_data, repository_name, tmp_entry, exposure_entry['id'], finding_entry['finding_idx'], evidence_entry['evidence_idx'], evidence_entry['total_rows'])
+                            rows_list = get_rows_for_evidence_for_finding_for_exposure_for_artifact(config_data, repository_name, tmp_entry, exposure_entry['id'], finding_entry['finding_idx'], evidence_entry['evidence_idx'], finding_entry['total_evidences'], evidence_entry['total_rows'])
                             logging.debug("Evidence Rows List: %s", rows_list)
 
-                            # for row_entry in rows_list:
-                            #     result_dict['evidence_row_number'] = row_entry["?"]
-                            #     result_dict['evidence_row_path'] = row_entry["?"]
-                            #     result_dict['evidence_row_evidence'] = row_entry["?"]
-                            #     result_dict['evidence_row_line_number'] = row_entry["?"]
+                            # [
+                            #   {
+                            #     'evidence_idx': 0,
+                            #     'evidence_text': '',
+                            #     'column_names': ['Path', 'Provider', 'Evidence', 'Line Number'],
+                            #     'cell_type': 'values_only',
+                            #     'total_rows': 1,
+                            #     'rows': [
+                            #       ['/bad_stuff/.aws/cli/cache/36c0348e027b522a55df7f3b50677d1035b67660.json', 'aws_access', 'o+8zZ**********', '1']
+                            #     ]
+                            #   }
+                            # ]
+
+                            # FIXME: This is dumping the values.  The should be converted into a class/object and values gathered via that.
+                            result_dict['evidence_row'] = str(rows_list[0]['rows'][0])
+                            result_dict['evidence_row'] = result_dict['evidence_row'].replace('"', '')
+                            result_dict['evidence_row'] = "\"{}\"".format(result_dict['evidence_row'])
 
                             writer.write(result_dict)
                     else:
